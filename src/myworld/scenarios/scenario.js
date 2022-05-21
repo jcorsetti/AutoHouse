@@ -1,51 +1,15 @@
 const Clock =  require('../../utils/Clock')
 const Agent = require('../../bdi/Agent')
-const Person = require('../structure/Person')
-const Light = require('../devices/Light')
-const Room = require('../structure/Room')
 const {Fridge, KeepStockedGoal} = require('../t1Agents/Fridge')
 
+const house = require('../structure/House')
+const Cleaner = require('../t1Agents/Cleaner')
 const SolarPanel = require('../devices/SolarPanel')
 const {WashingMachine, StartCycleGoal} = require('../t1Agents/WashingMachine')
 const {Manager, MonitorElectricityGoal, UpdateHistoryGoal, MonitorSolarPanelGoal} = require('../t2Agents/Manager')
 const {PersonLighterIntention, PersonLighterGoal } = require('../devices/LightSensor')
 const { Overseer, MonitorWeatherGoal } = require('../t2Agents/Overseer')
 
-class House {
-    constructor () {
-        this.people = { bob: new Person(this, 'Bob'), anna: new Person(this, 'Anna') }
-        this.rooms = {
-            'kitchen' : new Room(this, 'kitchen', ['living_room','backyard']),
-            'living_room' : new Room(this, 'living_room', ['garage','backyard','bathroom','kitchen','bedroom']),
-            'garage' : new Room(this, 'garage', ['living_room']),
-            'bathroom' : new Room(this, 'bathroom', ['living_room']),
-            'backyard' : new Room(this, 'backyard', ['living_room','kitchen']),
-            'bedroom' : new Room(this, 'bedroom', ['living_room'])
-
-        }
-        this.devices = {
-            kitchen_light: new Light(this, 'kitchen'),
-            garage_light: new Light(this, 'garage'),
-            living_room_light: new Light(this, 'living_room'),
-            bedroom_light: new Light(this, 'bedroom'),
-            bathroom_light: new Light(this, 'bathroom')
-        }
-    }
-
-    // given the fridge, removes a quantity of food depending on people present in the house
-    foodTime(fridge) {
-
-        let total_food = 0
-        for (let person in this.people)
-            if (this.people[person].in_house)
-                total_food += 1
-        fridge.serveFood(total_food)
-    }
-
-}
-
-
-var myHouse = new House()
 // Custom agent, turns on and off lights as people enter and exit rooms
 var myAgent = new Agent('lighter')
 
@@ -53,10 +17,11 @@ var myAgent = new Agent('lighter')
 // More comples agents and devices
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var manager = new Manager('manager', [wm.device, myHouse.devices.kitchen_light, myHouse.devices.garage_light, myHouse.devices.living_room_light, myHouse.devices.bedroom_light, myHouse.devices.bathroom_light], solarPanels)
+var manager = new Manager('manager', [wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
 var overseer = new Overseer('overseer', solarPanels)
 var fridge = new Fridge('fridge', manager)
-
+var cleaner = new Cleaner(house, 'vacuum', 'bathroom')
+house.beliefs.observeAny( (value,key,observable)=>{value ? cleaner.beliefs.declare(key) : cleaner.beliefs.undeclare(key)} )
 
 // Pushing intentions and passive goals
 myAgent.intentions.push(PersonLighterIntention)
@@ -66,17 +31,20 @@ manager.postSubGoal(new UpdateHistoryGoal())
 manager.postSubGoal(new MonitorSolarPanelGoal())
 overseer.postSubGoal(new MonitorWeatherGoal())
 
+
 // List of rooms and relative lights for the agent to check
 
 myAgent.postSubGoal(new PersonLighterGoal(
-    [myHouse.rooms.kitchen, myHouse.rooms.garage, myHouse.rooms.living_room, myHouse.rooms.bedroom, myHouse.rooms.bathroom],
-    [myHouse.devices.kitchen_light, myHouse.devices.garage_light, myHouse.devices.living_room_light, myHouse.devices.bedroom_light, myHouse.devices.bathroom_light]
+    [house.rooms.kitchen, house.rooms.garage, house.rooms.living_room, house.rooms.bedroom, house.rooms.bathroom],
+    [house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light]
 ))
   
 // Initializing people counts and locations
-myHouse.rooms.bedroom.set('people_count',2)
-myHouse.people.bob.set('in_room','bedroom')
-myHouse.people.anna.set('in_room','bedroom')
+house.rooms.bedroom.set('people_count',2)
+house.people.bob.set('in_room','bedroom')
+house.people.anna.set('in_room','bedroom')
+house.beliefs.declare('filthy backyard')
+house.beliefs.undeclare('clean backyard')
 
 // Method for the manager to set lesser Agents attributes
 manager.setAgentAttribute(wm, 'eco_mode', 'off')
@@ -88,10 +56,10 @@ manager.setAgentAttribute(wm, 'eco_mode', 'off')
 Clock.global.observe('mm', async (mm) => {
     var time = Clock.global
     if (time.hh==8 && time.mm==30) {
-        myHouse.people.bob.moveTo('living_room')
-        myHouse.people.anna.moveTo('living_room')
+        house.people.bob.moveTo('living_room')
+        house.people.anna.moveTo('living_room')
         // Going to work: anna always do, bob has a more random, flexible schedule
-        myHouse.people.anna.goToWork(7,8)
+        house.people.anna.goToWork(7,8)
         
         if(Math.random > 0.5)
             bob.goToWork(3,9)
@@ -100,16 +68,16 @@ Clock.global.observe('mm', async (mm) => {
         
     }
     if(time.hh==13 && time.mm==30) {
-        myHouse.people.anna.moveTo('kitchen')
+        house.people.anna.moveTo('kitchen')
         // moveTo does not throw error if the person is not in the house
-        myHouse.people.bob.moveTo('kitchen')
-        myHouse.people.anna.moveTo('kitchen')
+        house.people.bob.moveTo('kitchen')
+        house.people.anna.moveTo('kitchen')
         // lunch time
-        myHouse.foodTime(fridge)
+        house.foodTime(fridge)
     }
     if(time.hh==19 && time.mm==0) {
-        myHouse.people.bob.moveTo('living_room')
-
+        house.people.bob.moveTo('living_room')
+        //cleaner.run_cleaning_schedule()
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability
@@ -120,11 +88,11 @@ Clock.global.observe('mm', async (mm) => {
         wm.postSubGoal(new StartCycleGoal())
 
         // dinner time
-        myHouse.foodTime(fridge)
+        house.foodTime(fridge)
     }
     if(time.hh==22 && time.mm==15) {
-        myHouse.people.bob.moveTo('bedroom')
-        myHouse.people.anna.moveTo('bedroom')
+        house.people.bob.moveTo('bedroom')
+        house.people.anna.moveTo('bedroom')
 
     }
 })
