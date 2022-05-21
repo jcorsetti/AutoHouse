@@ -62,10 +62,21 @@ class MonitorSolarPanelIntention extends Intention {
             // change of status modifies internal belief of watt gain
             while(true) {
                 let status = await this.agent.source.notifyChange('status')
-                if (status == 'on') // means that before it was off: must add electricity consumption
+                let prev_status = this.agent.prev_source_status
+                // means that before it was off: must add electricity consumption
+                if (status == 'on' && prev_status != 'on')  {
+
                     this.agent.beliefs.set('watt_gain', this.agent.source.production)
-                else // means it was on before: subtract electricity consumption 
-                    this.agent.beliefs.set('watt_gain', 0)
+                    this.agent.prev_source_status = 'on'
+                }
+                else {
+
+                    // means it was on before: subtract electricity consumption 
+                    if (status == 'off' && prev_status != 'off') {
+                        this.agent.beliefs.set('watt_gain', 0)
+                        this.agent.prev_source_status = 'off'
+                    }  
+                }
             }
         })
         
@@ -190,11 +201,24 @@ class MonitorElectricityIntention extends Intention {
                 while (true) {
                     // When one of the device status changes, watt consumpion id added/removed from current consumption
                     let status = await device.notifyChange('status')
+                    let idx_device = this.agent.devices.indexOf(device)
+                    let prev_status = this.agent.prev_device_status[idx_device]
                     let e_consumption = this.agent.beliefs.watt_consumption
-                    if (status == 'on') // means that before it was off: must add electricity consumption
+
+                    // means that before it was off: must add electricity consumption
+                    if (status == 'on' && prev_status != 'on') {
+
+                        this.agent.prev_device_status[idx_device] = 'on'
                         this.agent.beliefs.set('watt_consumption',e_consumption + device.consumption)
-                    else // means it was on before: subtract electricity consumption 
-                        this.agent.beliefs.set('watt_consumption',e_consumption - device.consumption)
+                    } 
+                    else {
+                    // means that before it was on: must remove
+                        if (status == 'off' && prev_status != 'off') {
+
+                            this.agent.prev_device_status[idx_device] = 'off'
+                            this.agent.beliefs.set('watt_consumption',e_consumption - device.consumption)
+                        } 
+                    }
                 }
             });
             monitors_goals.push(monitor)
@@ -218,6 +242,13 @@ class Manager extends Agent {
         this.BATTERY_CAP = 2000
         this.devices = devices
         this.source = source // energy source, tipically solar panels
+        this.prev_device_status = []
+        // Must keep track of previous states to manage watt consumption
+        for (let device of this.devices) {
+            this.prev_device_status.push(device.status)
+        }
+        this.prev_source_status = this.source.status
+        
         this.history = {
             'watt_consumption' : [0],
             'energy_bought' : [0],

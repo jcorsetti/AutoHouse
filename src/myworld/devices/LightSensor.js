@@ -42,13 +42,13 @@ class PersonLighterIntention extends Intention {
                     if (status >= 1) {
                         // Assumes relative lights to have the same name as the room!
                         for(let light of this.lights) {
-                            if (light.name == room.name && light.status == 'off')
+                            if (light.name == room.name && (light.status == 'off'))
                                 light.switchOnLight()
                         }
                     }
                     else 
                         for(let light of this.lights)
-                            if (light.name == room.name && light.status == 'on')
+                            if (light.name == room.name && (light.status == 'on'))
                                 light.switchOffLight()
 
                 }

@@ -49,12 +49,14 @@ var myHouse = new House()
 // Custom agent, turns on and off lights as people enter and exit rooms
 var myAgent = new Agent('lighter')
 
+
 // More comples agents and devices
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
 var manager = new Manager('manager', [wm.device, myHouse.devices.kitchen_light, myHouse.devices.garage_light, myHouse.devices.living_room_light, myHouse.devices.bedroom_light, myHouse.devices.bathroom_light], solarPanels)
 var overseer = new Overseer('overseer', solarPanels)
 var fridge = new Fridge('fridge', manager)
+
 
 // Pushing intentions and passive goals
 myAgent.intentions.push(PersonLighterIntention)
@@ -65,11 +67,12 @@ manager.postSubGoal(new MonitorSolarPanelGoal())
 overseer.postSubGoal(new MonitorWeatherGoal())
 
 // List of rooms and relative lights for the agent to check
+
 myAgent.postSubGoal(new PersonLighterGoal(
     [myHouse.rooms.kitchen, myHouse.rooms.garage, myHouse.rooms.living_room, myHouse.rooms.bedroom, myHouse.rooms.bathroom],
     [myHouse.devices.kitchen_light, myHouse.devices.garage_light, myHouse.devices.living_room_light, myHouse.devices.bedroom_light, myHouse.devices.bathroom_light]
 ))
-
+  
 // Initializing people counts and locations
 myHouse.rooms.bedroom.set('people_count',2)
 myHouse.people.bob.set('in_room','bedroom')
@@ -77,6 +80,9 @@ myHouse.people.anna.set('in_room','bedroom')
 
 // Method for the manager to set lesser Agents attributes
 manager.setAgentAttribute(wm, 'eco_mode', 'off')
+
+//manager.beliefs.observe('watt_consumption', (status) => {console.log('WATT TO '+status)})
+//manager.beliefs.observe('watt_gain', (status) => {console.log('GAINS TO '+status)})
 
 // Simulated Daily/Weekly schedule
 Clock.global.observe('mm', async (mm) => {
@@ -86,12 +92,15 @@ Clock.global.observe('mm', async (mm) => {
         myHouse.people.anna.moveTo('living_room')
         // Going to work: anna always do, bob has a more random, flexible schedule
         myHouse.people.anna.goToWork(7,8)
+        
         if(Math.random > 0.5)
             bob.goToWork(3,9)
         else 
             console.log('Bob is working from home today')
+        
     }
     if(time.hh==13 && time.mm==30) {
+        myHouse.people.anna.moveTo('kitchen')
         // moveTo does not throw error if the person is not in the house
         myHouse.people.bob.moveTo('kitchen')
         myHouse.people.anna.moveTo('kitchen')
@@ -105,8 +114,8 @@ Clock.global.observe('mm', async (mm) => {
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability
         wm.remove_loads()
-        //if(Math.random > 0.1) 
-        wm.add_load()
+        if(Math.random > 0.1) 
+            wm.add_load()
         // Cycle will only start when the agent settings allows it
         wm.postSubGoal(new StartCycleGoal())
 

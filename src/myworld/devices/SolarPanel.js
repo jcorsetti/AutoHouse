@@ -14,14 +14,11 @@ class SolarPanel extends Observable {
             var time = Clock.global
             // Cover is set on by the overseer when dangerous weather is detected
             if (this.cover == 'off') {
-                if (Clock.isDay(time)) {
-                    // Avoid triggering observer if the values do not change
-                    if (this.status == 'off') 
-                        this.status = 'on'
+                if (Clock.isDay(time)) { 
+                    this.status = 'on'
                 }
-                else {
-                    if (this.status == 'on') 
-                        this.status = 'off'
+                else { 
+                    this.status = 'off'
                 }
             }
         })

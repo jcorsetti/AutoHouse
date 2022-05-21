@@ -88,7 +88,7 @@ class WashingMachine extends Agent {
     }
     // Similar to above, remove loads from washing machine if possible
     async remove_loads() {
-        if (this.device.status == 'off') {
+        if (this.device.status == 'off' || this.device.status == 'nan') {
             if (this.device.done) {
                 this.device.set('num_loads', 0)
                 this.device.set('done', false)
