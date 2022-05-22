@@ -13,15 +13,13 @@ const { Overseer, MonitorWeatherGoal } = require('../t2Agents/Overseer')
 // Custom agent, turns on and off lights as people enter and exit rooms
 var myAgent = new Agent('lighter')
 
-
 // More comples agents and devices
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var manager = new Manager('manager', [wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
+var cleaner = new Cleaner(house, 'vacuum', 'bathroom')
+var manager = new Manager('manager', [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
 var overseer = new Overseer('overseer', solarPanels)
 var fridge = new Fridge('fridge', manager)
-var cleaner = new Cleaner(house, 'vacuum', 'bathroom')
-house.beliefs.observeAny( (value,key,observable)=>{value ? cleaner.beliefs.declare(key) : cleaner.beliefs.undeclare(key)} )
 
 // Pushing intentions and passive goals
 myAgent.intentions.push(PersonLighterIntention)
@@ -31,6 +29,7 @@ manager.postSubGoal(new UpdateHistoryGoal())
 manager.postSubGoal(new MonitorSolarPanelGoal())
 overseer.postSubGoal(new MonitorWeatherGoal())
 
+house.beliefs.observeAny( (value,key,observable)=>{value ? cleaner.beliefs.declare(key) : cleaner.beliefs.undeclare(key)} )
 
 // List of rooms and relative lights for the agent to check
 
@@ -77,7 +76,7 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==19 && time.mm==0) {
         house.people.bob.moveTo('living_room')
-        //cleaner.run_cleaning_schedule()
+        cleaner.run_cleaning_schedule()
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability

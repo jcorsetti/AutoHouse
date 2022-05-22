@@ -12,10 +12,11 @@ const {DIRT_CHANCE} = require('../scenarios/constants.js')
 class FakeAction extends pddlActionIntention {
 
     async checkPreconditionAndApplyEffect () {
-        console.log('CHECKING PREC: ', this.checkPrecondition())
+        //console.log('PRECOD: ', this.precondition)
+        //console.log('BELIEFS: ', (this.agent.beliefs.entries))
         if ( this.checkPrecondition() ) {
             this.applyEffect()
-            await new Promise(res=>setTimeout(res,1000))
+            await new Promise(res=>setTimeout(res,10))
             // this.log('effects applied')
         }
         else
@@ -99,7 +100,6 @@ for (let room_name in house.rooms) {
         house.beliefs.declare('accessible ' + room_name + ' ' + adj_room)
     }    
 }
-
 
 Clock.global.observe('hh', async () => {
             
