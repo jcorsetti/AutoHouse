@@ -5,25 +5,9 @@ const Agent = require('../../bdi/Agent')
 const Goal = require('../../bdi/Goal')
 const Clock = require('../../utils/Clock')
 const Intention = require('../../bdi/Intention')
-const pddlActionIntention = require('../../pddl/actions/pddlActionIntention')
+const {FakeAction} = require('../../pddl/actions/pddlActionIntention')
 const {DIRT_CHANCE} = require('../scenarios/constants.js')
 
-// An action of PDDL
-class FakeAction extends pddlActionIntention {
-
-    async checkPreconditionAndApplyEffect () {
-        //console.log('PRECOD: ', this.precondition)
-        //console.log('BELIEFS: ', (this.agent.beliefs.entries))
-        if ( this.checkPrecondition() ) {
-            this.applyEffect()
-            await new Promise(res=>setTimeout(res,10))
-            // this.log('effects applied')
-        }
-        else
-            throw new Error('pddl precondition not valid'); //Promise is rejected!
-    }
-
-}
 
 const house = new Agent('house')
 house.people = { bob: new Person(house, 'Bob'), anna: new Person(house, 'Anna') }
@@ -34,8 +18,10 @@ house.rooms = {
     'bathroom' : new Room(house, 'bathroom', ['living_room']),
     'backyard' : new Room(house, 'backyard', ['living_room','kitchen']),
     'bedroom' : new Room(house, 'bedroom', ['living_room'])
-
 }
+
+house.room_priority = ['kitchen','living_room','bathroom','bedroom','garage','backyard']
+
 house.devices = {
     kitchen_light: new Light(house, 'kitchen'),
     garage_light: new Light(house, 'garage'),
@@ -44,19 +30,9 @@ house.devices = {
     bathroom_light: new Light(house, 'bathroom')
 }
 
-// given the fridge, removes a quantity of food depending on people present in the house
-house.foodTime = function(fridge) {
+// Dictionary containing references to agents which must be accessible during planning
+house.planning_agents = {}
 
-    let total_food = 0
-    for (let person in house.people)
-        if (house.people[person].in_house)
-            total_food += 1
-    fridge.serveFood(total_food)
-}
-
-//TODO: define house beliefs
-
-// Must define each precond, effect, parameter of each action
 class MoveTo extends FakeAction {
     static parameters = ['agent', 'room1', 'room2']
     static precondition = [['accessible', 'room1', 'room2'], ['in-room', 'room1', 'agent']]
@@ -101,6 +77,17 @@ for (let room_name in house.rooms) {
     }    
 }
 
+// given the fridge, removes a quantity of food depending on people present in the house
+house.foodTime = function(fridge) {
+
+    let total_food = 0
+    for (let person in house.people)
+        if (house.people[person].in_house)
+            total_food += 1
+    fridge.serveFood(total_food)
+}
+
+// Random dirt generation!
 Clock.global.observe('hh', async () => {
             
     if (Math.random() <= DIRT_CHANCE) {
@@ -109,11 +96,13 @@ Clock.global.observe('hh', async () => {
         let choosen_room = room_names[room_index]
         
         if (house.beliefs.check('clean ' + choosen_room)){
+            console.log(choosen_room + ' became dirty!')
             house.beliefs.undeclare('clean ' + choosen_room)
             house.beliefs.declare('dirty ' + choosen_room)
         }
         else {
             if (house.beliefs.check('dirty ' + choosen_room)){
+                console.log(choosen_room + ' became filthy!')
                 house.beliefs.undeclare('dirty ' + choosen_room)
                 house.beliefs.declare('filthy ' + choosen_room)
             }

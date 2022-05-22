@@ -16,7 +16,7 @@ var myAgent = new Agent('lighter')
 // More comples agents and devices
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var cleaner = new Cleaner(house, 'vacuum', 'bathroom')
+var cleaner = new Cleaner('vacuum', house.room_priority, 'bathroom')
 var manager = new Manager('manager', [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
 var overseer = new Overseer('overseer', solarPanels)
 var fridge = new Fridge('fridge', manager)
@@ -29,8 +29,6 @@ manager.postSubGoal(new UpdateHistoryGoal())
 manager.postSubGoal(new MonitorSolarPanelGoal())
 overseer.postSubGoal(new MonitorWeatherGoal())
 
-house.beliefs.observeAny( (value,key,observable)=>{value ? cleaner.beliefs.declare(key) : cleaner.beliefs.undeclare(key)} )
-
 // List of rooms and relative lights for the agent to check
 
 myAgent.postSubGoal(new PersonLighterGoal(
@@ -42,8 +40,8 @@ myAgent.postSubGoal(new PersonLighterGoal(
 house.rooms.bedroom.set('people_count',2)
 house.people.bob.set('in_room','bedroom')
 house.people.anna.set('in_room','bedroom')
-house.beliefs.declare('filthy backyard')
-house.beliefs.undeclare('clean backyard')
+//house.beliefs.declare('filthy backyard')
+//house.beliefs.undeclare('clean backyard')
 
 // Method for the manager to set lesser Agents attributes
 manager.setAgentAttribute(wm, 'eco_mode', 'off')

@@ -1,7 +1,6 @@
 const Intention =  require('../../bdi/Intention')
 
 
-
 class pddlActionIntention extends Intention {
 
     // Example LightOn:
@@ -27,12 +26,12 @@ class pddlActionIntention extends Intention {
     get precondition () {
         return pddlActionIntention.ground(this.constructor.precondition, this.goal.parameters)
     }
-
+    
     checkPrecondition () {
         return this.agent.beliefs.check(...this.precondition);
     }
 
-
+    
 
     get effect () {
         return pddlActionIntention.ground(this.constructor.effect, this.goal.parameters)
@@ -44,11 +43,11 @@ class pddlActionIntention extends Intention {
 
     applyEffect () {
         for ( let b of this.effect )
-            this.agent.beliefs.apply(b)
+        this.agent.beliefs.apply(b)
     }
 
 
-
+    
     /**
      * 
      * @param {Array<String>} parametrizedLiterals Array of parametrized literals;
@@ -65,12 +64,26 @@ class pddlActionIntention extends Intention {
             let grounded = possibly_negated_predicate
             for (let v of vars)
                 grounded = grounded + ' ' + parametersMap[v]
-            return grounded
-        })
+                return grounded
+            })
     }
     
 }
 
+class FakeAction extends pddlActionIntention {
+
+    async checkPreconditionAndApplyEffect () {
+        //console.log('PRECOD: ', this.precondition)
+        //console.log('BELIEFS: ', (this.agent.beliefs.entries))
+        if ( this.checkPrecondition() ) {
+            this.applyEffect()
+            await new Promise(res=>setTimeout(res,10))
+            // this.log('effects applied')
+        }
+        else
+            throw new Error('pddl precondition not valid'); //Promise is rejected!
+    }
+}
 
 
-module.exports = pddlActionIntention
+module.exports = {pddlActionIntention, FakeAction}
