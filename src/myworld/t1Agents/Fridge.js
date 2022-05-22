@@ -2,13 +2,15 @@ const Agent = require('../../bdi/Agent')
 const Goal = require('../../bdi/Goal')
 const Intention = require('../../bdi/Intention')
 const Observable = require('../../utils/Observable')
+const FridgeDevice = require('../devices/FridgeDevice')
 const {FoodNotificationGoal} = require('../t2Agents/Manager')
 
 // Agent managing a fridge
 class Fridge extends Agent {
     constructor(name, manager) {
         super(name)
-        this.CAP = 10 // Max food quantity
+
+        this.device = new FridgeDevice(name, 10)
         this.intentions.push(KeepStockedIntention) //always active
         this.manager = manager   // relative manager. Threshold ath which food is ordered, quantity of food ordered
         this.beliefs = new Observable({'food' : 7, 'food_order_level' : 6, 'food_to_order' : 3})

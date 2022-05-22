@@ -5,7 +5,7 @@ const {Fridge, KeepStockedGoal} = require('../t1Agents/Fridge')
 const house = require('../structure/House')
 const Cleaner = require('../t1Agents/Cleaner')
 const SolarPanel = require('../devices/SolarPanel')
-const {WashingMachine, StartCycleGoal} = require('../t1Agents/WashingMachine')
+const {WashingMachine} = require('../t1Agents/WashingMachine')
 const {Manager, MonitorElectricityGoal, UpdateHistoryGoal, MonitorSolarPanelGoal} = require('../t2Agents/Manager')
 const {PersonLighterIntention, PersonLighterGoal } = require('../devices/LightSensor')
 const { Overseer, MonitorWeatherGoal } = require('../t2Agents/Overseer')
@@ -18,8 +18,9 @@ var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
 var cleaner = new Cleaner('vacuum', house.room_priority, 'bathroom')
 var manager = new Manager('manager', [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
-var overseer = new Overseer('overseer', solarPanels)
 var fridge = new Fridge('fridge', manager)
+manager.addDevice(fridge.device)
+var overseer = new Overseer('overseer', solarPanels)
 
 // Pushing intentions and passive goals
 myAgent.intentions.push(PersonLighterIntention)
@@ -78,11 +79,11 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability
-        wm.remove_loads()
+        wm.removeLoads()
         if(Math.random > 0.1) 
-            wm.add_load()
+            wm.addLoad()
         // Cycle will only start when the agent settings allows it
-        wm.postSubGoal(new StartCycleGoal())
+        wm.startCycle()
 
         // dinner time
         house.foodTime(fridge)

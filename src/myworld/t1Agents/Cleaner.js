@@ -11,7 +11,7 @@ const house = require('../structure/House')
 // Defines, again, actions as pddl intentions
 class MoveTo extends pddlActionIntention {
     static parameters = ['agent', 'room1', 'room2'];
-    static precondition = [['accessible', 'room1', 'room2'], ['in-room', 'room1', 'agent']];
+    static precondition = [['accessible', 'room1', 'room2'], ['in-room', 'room1', 'agent'], ['not busy', 'room2']];
     static effect = [['in-room', 'room2','agent'], ['not in-room','room1','agent']];
     *exec ({agent, room1, room2}=parameters) {
 
@@ -62,7 +62,7 @@ class CleanFilthy extends pddlActionIntention {
         
         if (house.beliefs.check('not filthy ' + room))
             cur_agent.beliefs.undeclare('filthy ' + room)
-        
+            house.filth_level.set('filth', house.filth_level.filth-1)
         // The action takes a certain time to be completed
         while(true) {
             Clock.global.notifyChange('mm')
@@ -97,6 +97,7 @@ class CleanDirty extends pddlActionIntention {
         if (house.beliefs.check('not dirty ' + room)) 
             cur_agent.beliefs.undeclare('dirty ' + room)
         
+        house.filth_level.set('filth', house.filth_level.filth-1)
         // The action takes a certain time to be completed
         while(true) {
             Clock.global.notifyChange('mm')
@@ -148,6 +149,13 @@ class Cleaner extends Agent {
 
         goal.push('in-room ' + this.device.start_position + ' ' + this.device.name)
         
+        for (let room in house.rooms) {
+            if (house.rooms[room].people_count > 2) {
+
+                this.beliefs.declare('busy ' + room)
+                house.beliefs.declare('busy ' + room)
+            }
+        }
 
         return goal
     }

@@ -64,7 +64,11 @@ class WashingMachine extends Agent {
         this.device = new WashingDevice()
     }
 
-    async add_load() {
+    async startCycle() {
+        return this.postSubGoal(new StartCycleGoal())
+    }
+
+    async addLoad() {
         // Add another load if possible, otherwise rejects
         return new Promise((resolve, reject) => {
   
@@ -84,10 +88,10 @@ class WashingMachine extends Agent {
                 reject(this.name + ' : device still working.')
             }
         })
-
     }
+
     // Similar to above, remove loads from washing machine if possible
-    async remove_loads() {
+    async removeLoads() {
         if (this.device.status == 'off' || this.device.status == 'nan') {
             if (this.device.done) {
                 this.device.set('num_loads', 0)

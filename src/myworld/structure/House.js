@@ -7,6 +7,7 @@ const Clock = require('../../utils/Clock')
 const Intention = require('../../bdi/Intention')
 const {FakeAction} = require('../../pddl/actions/pddlActionIntention')
 const {DIRT_CHANCE} = require('../scenarios/constants.js')
+const Observable = require('../../utils/Observable')
 
 
 const house = new Agent('house')
@@ -21,7 +22,8 @@ house.rooms = {
 }
 
 house.room_priority = ['kitchen','living_room','bathroom','bedroom','garage','backyard']
-
+house.filth_level = new Observable()
+house.filth_level.set('filth',0)
 house.devices = {
     kitchen_light: new Light(house, 'kitchen'),
     garage_light: new Light(house, 'garage'),
@@ -87,7 +89,7 @@ house.foodTime = function(fridge) {
     fridge.serveFood(total_food)
 }
 
-// Random dirt generation!
+// Random dirt generation and tracking!
 Clock.global.observe('hh', async () => {
             
     if (Math.random() <= DIRT_CHANCE) {
@@ -97,12 +99,14 @@ Clock.global.observe('hh', async () => {
         
         if (house.beliefs.check('clean ' + choosen_room)){
             console.log(choosen_room + ' became dirty!')
+            house.filth_level.set('filth', house.filth_level.filth+1)
             house.beliefs.undeclare('clean ' + choosen_room)
             house.beliefs.declare('dirty ' + choosen_room)
         }
         else {
             if (house.beliefs.check('dirty ' + choosen_room)){
                 console.log(choosen_room + ' became filthy!')
+                house.filth_level.set('filth', house.filth_level.filth+1)
                 house.beliefs.undeclare('dirty ' + choosen_room)
                 house.beliefs.declare('filthy ' + choosen_room)
             }

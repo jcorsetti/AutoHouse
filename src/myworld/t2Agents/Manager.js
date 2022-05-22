@@ -257,6 +257,11 @@ class Manager extends Agent {
 
     }
 
+    // add a device to the tracked devices list
+    addDevice(device) {
+        this.devices.push(device)
+    }
+
     // method to set an agent attributes if it allows taking orders
     setAgentAttribute(agent, key, value) {
 
