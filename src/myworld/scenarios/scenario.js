@@ -17,7 +17,7 @@ var myAgent = new Agent('lighter')
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
 var cleaner = new Cleaner('vacuum', house.room_priority, 'bathroom')
-var manager = new Manager('manager', [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
+var manager = new Manager('manager', house, [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
 var fridge = new Fridge('fridge', manager)
 manager.addDevice(fridge.device)
 var overseer = new Overseer('overseer', solarPanels)
@@ -75,7 +75,7 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==19 && time.mm==0) {
         house.people.bob.moveTo('living_room')
-        cleaner.run_cleaning_schedule()
+        cleaner.decideCleaning()
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability

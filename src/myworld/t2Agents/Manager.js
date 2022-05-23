@@ -5,6 +5,7 @@ const Goal = require('../../bdi/Goal')
 const Intention = require('../../bdi/Intention')
 const {TakeOrderGoal, TakeOrderIntention} = require('../t1Agents/utils')
 const {DAY_ENERGY_COST, NIGHT_ENERGY_COST, SOLD_ENERGY_GAIN, FOOD_PRICE} = require('../scenarios/constants')
+const house = require('../structure/House')
 
 
 class FoodNotificationGoal extends Goal {
@@ -114,12 +115,20 @@ class UpdateHistoryIntention extends Intention {
                 let history_len = this.agent.history.watt_consumption.length
                 console.log('Day ' + time.dd + ' consumption: ')
                 for (const prop in this.agent.history) {
-                    console.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
+                    // Calculate mean filth on time unit
+                    if (prop == 'mean_filth') {                         // 96 quarters of hours in a day
+                        this.agent.history[prop][history_len-1] = this.agent.beliefs.filth / (96)
+                        this.agent.beliefs.filth = 0
+                        console.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
+                    }
+                    else
+                        console.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
                 }
                     
                 this.agent.history.watt_consumption.push(0)
                 this.agent.history.energy_bought.push(0)
                 this.agent.history.expenses.push(0)
+                this.agent.history.mean_filth.push(0)
 
             }
 
@@ -134,7 +143,7 @@ class UpdateHistoryIntention extends Intention {
                 let new_battery_status = 0
                 // This is not dependant from battery
                 this.agent.history.watt_consumption[time.dd] += cur_watt 
-                
+                this.agent.beliefs.filth += this.agent.house.filth_level.filth
                 // Most common, must access to battery or buy energy
                 if (net_consumption >= 0) {
 
@@ -229,20 +238,22 @@ class MonitorElectricityIntention extends Intention {
 
 
 class Manager extends Agent {
-    constructor(name, devices, source) {
+    constructor(name, house, devices, source) {
         super(name)
         // Manager capabilities
         this.intentions.push(MonitorElectricityIntention)
         this.intentions.push(MonitorSolarPanelIntention)
         this.intentions.push(FoodNotificationIntention)
         this.intentions.push(UpdateHistoryIntention)
-
+        this.house = house
+        console.log(this.house)
         // Used to monitor electricity
-        this.beliefs = new Observable({'watt_consumption': 0, 'watt_gain': 0, 'battery_status' : 0})
+        this.beliefs = new Observable({'watt_consumption': 0, 'watt_gain': 0, 'battery_status' : 0, 'filth' : 0})
         this.BATTERY_CAP = 2000
         this.devices = devices
         this.source = source // energy source, tipically solar panels
         this.prev_device_status = []
+        
         // Must keep track of previous states to manage watt consumption
         for (let device of this.devices) {
             this.prev_device_status.push(device.status)
@@ -252,7 +263,8 @@ class Manager extends Agent {
         this.history = {
             'watt_consumption' : [0],
             'energy_bought' : [0],
-            'expenses' : [0]
+            'expenses' : [0],
+            'mean_filth' : [0]
         }
 
     }
@@ -273,6 +285,10 @@ class Manager extends Agent {
                     else
                         console.log(this.name+' error: no attribute ' + key + ' in ' + agent.name)
                 })
+                .catch(
+                    (err) => {console.log('setAgentAttribute error: ' + err)}
+                )
+
                 
         }
         else console.log('Agent ' + agent.name + ' does not take orders!')

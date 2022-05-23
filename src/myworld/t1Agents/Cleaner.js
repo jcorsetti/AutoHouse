@@ -1,8 +1,6 @@
 const {pddlActionIntention} = require('../../pddl/actions/pddlActionIntention')
 const Clock = require('../../utils/Clock')
 const Agent = require('../../bdi/Agent')
-const Goal = require('../../bdi/Goal')
-const Intention = require('../../bdi/Intention')
 const PlanningGoal = require('../../pddl/PlanningGoal')
 const CleanerDevice = require('../devices/CleanerDevice')
 const house = require('../structure/House')
@@ -122,11 +120,11 @@ class Cleaner extends Agent {
         // Room priority is a list of rooms name, which speifiy the priority in room cleaning
         this.room_priority = room_priority
         // Used as an eco setting: if N is setted, the vacuum cleaner will clean only the first N dirty room in the priority list
-        this.room_to_clean = 3
-
+        this.room_to_clean = 5
+        this.filth_tolerated = 4
     }
 
-    build_goal() {
+    buildGoal() {
         let goal = []
 
         // Beliefs updating: current room status is transferred from the house to the vacuum cleaner
@@ -160,12 +158,19 @@ class Cleaner extends Agent {
         return goal
     }
 
-    run_cleaning_schedule() {
+    decideCleaning() {
+        if(house.filth_level.filth > this.filth_tolerated) {
+            console.log('Too much filth detected, started cleaning schedule')
+            this.runCleaningSchedule()
+        }
+    }
+
+    runCleaningSchedule() {
         
         // Can happen only if vacuum is not already going
         if (this.device.status == 'off') {
             
-            let current_goal = this.build_goal()
+            let current_goal = this.buildGoal()
             
             if (current_goal.length == 1) {
                 console.log(this.device.name + ' : there are no rooms to clean.')
@@ -184,8 +189,9 @@ class Cleaner extends Agent {
             .then((res) => {
                 console.log('Plan finished, setting off')
                 this.device.set('status','off')
-            }) // by default give up after trying all intention to achieve the goal
-            
+            }) 
+            .catch((res) => {console.log('Planning goal : error occurred ' + res)})
+
         }
         else {
             console.log('Cleaner already on, not starting')

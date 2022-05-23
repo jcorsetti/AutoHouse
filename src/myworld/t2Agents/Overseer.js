@@ -26,7 +26,7 @@ class MonitorWeatherIntention extends Intention {
     }
 
     *exec() {
-
+        // Every hour, dangerous weather as a chance of occurring
         Clock.global.observe('hh', async () => {
             var time = Clock.global
             let chance = Math.random()
@@ -34,6 +34,7 @@ class MonitorWeatherIntention extends Intention {
                 console.log(this.agent.name + ' dangerous weather event occurring, covering solar panels')
                 this.agent.solar_panels.set('cover','on')
                 this.agent.solar_panels.set('status','off')
+                // The random duration of the event is generated contextually
                 let event_duration = Clock.random_time(7,2) //Between 2 and 7 hours
                 let event_finish_time = sumTime(time, event_duration)
                 this.agent.beliefs.dangerous_weather = true
@@ -41,7 +42,7 @@ class MonitorWeatherIntention extends Intention {
                 while(true) {
                     
                     time = await Clock.global.notifyChange('mm')
-                    
+                    // When time comes, the cycle breaks off
                     if (equalTimes(Clock.global, event_finish_time)) {
                         console.log(this.agent.name + ' back to normal weather, starting solar panels')
                         this.agent.solar_panels.set('cover','off')
