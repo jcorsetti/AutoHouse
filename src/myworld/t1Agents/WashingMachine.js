@@ -30,7 +30,7 @@ class StartCycleIntention extends Intention {
                 console.log(this.agent.name + ' : starting, expected end at time ' + Clock.timeToString(finish_time))
                 // Modify beliefs
                 this.agent.device.set('status','on')
-                this.agent.device.set('num_loads',0)
+                this.agent.device.set('num_loads', 0)
                 
                 // Wait for finish time to arrive
                 while(true) {

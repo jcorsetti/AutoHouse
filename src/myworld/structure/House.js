@@ -8,9 +8,8 @@ const {FakeAction} = require('../../pddl/actions/pddlActionIntention')
 const {DIRT_CHANCE} = require('../scenarios/constants.js')
 const Observable = require('../../utils/Observable')
 
-
 const house = new Agent('house')
-house.people = { bob: new Person(house, 'Bob'), anna: new Person(house, 'Anna') }
+house.people = {}
 house.rooms = {
     'kitchen' : new Room(house, 'kitchen', ['living_room','backyard']),
     'living_room' : new Room(house, 'living_room', ['garage','backyard','bathroom','kitchen','bedroom']),
@@ -83,9 +82,39 @@ house.foodTime = function(fridge) {
 
     let total_food = 0
     for (let person in house.people)
-        if (house.people[person].in_house)
+        if (house.people[person].beliefs.in_house)
             total_food += 1
     fridge.serveFood(total_food)
+}
+
+// Register a person in the house. Unregistered people trigger the Overseer alarm
+house.registerPerson = function(person, room) {
+    // Update person references to house
+    person.house = house
+    person.beliefs.in_room = room
+    person.beliefs.in_house = true
+    // Update person position in house
+    house.rooms[room].addPerson(person.name)
+    // Registering people in list
+    house.people[person.name] = person
+    console.log('Person ' + person.name + ' registered in the house.')
+}
+
+// Remove a person from the house
+house.removePerson = function(person_name) {
+    let person = house.people[person_name]
+    let old_room = person.in_room
+    // Update person references to house
+    person.house = undefined
+    person.beliefs.in_room = undefined
+    person.beliefs.in_house = false
+    // Update person position in house
+    if (old_room != undefined) {
+        house.rooms[old_room].removePerson(person_name)
+    }
+    // Registering people in list
+    delete house.people[person.name]
+    console.log('Person ' + person.name + ' has been removed from the house.')
 }
 
 // Random dirt generation and tracking!

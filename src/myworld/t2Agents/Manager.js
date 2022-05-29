@@ -246,7 +246,6 @@ class Manager extends Agent {
         this.intentions.push(FoodNotificationIntention)
         this.intentions.push(UpdateHistoryIntention)
         this.house = house
-        console.log(this.house)
         // Used to monitor electricity
         this.beliefs = new Observable({'watt_consumption': 0, 'watt_gain': 0, 'battery_status' : 0, 'filth' : 0})
         this.BATTERY_CAP = 2000

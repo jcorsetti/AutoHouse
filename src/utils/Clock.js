@@ -118,7 +118,7 @@ class Clock {
     }
 
     // Generate a random interval of time
-    static random_time(min_h, max_h) {
+    static randomTime(min_h, max_h) {
         let hh = Math.floor(Math.random() * (max_h - min_h)) + min_h
         let mm = Math.floor(Math.random() * 3) * 15
 

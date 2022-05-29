@@ -35,7 +35,7 @@ class MonitorWeatherIntention extends Intention {
                 this.agent.solar_panels.set('cover','on')
                 this.agent.solar_panels.set('status','off')
                 // The random duration of the event is generated contextually
-                let event_duration = Clock.random_time(7,2) //Between 2 and 7 hours
+                let event_duration = Clock.randomTime(7,2) //Between 2 and 7 hours
                 let event_finish_time = sumTime(time, event_duration)
                 this.agent.beliefs.dangerous_weather = true
 
@@ -58,11 +58,12 @@ class MonitorWeatherIntention extends Intention {
 
 
 class Overseer extends Agent {
-    constructor(name, solar_panels) {
+    constructor(name, house, solar_panels) {
 
         super(name)   
         this.solar_panels = solar_panels
         this.intentions.push(MonitorWeatherIntention)
+        this.house = house
         this.beliefs = new Observable({'dangerous_weather': false})
     }
 
