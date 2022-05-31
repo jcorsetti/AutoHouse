@@ -16,19 +16,22 @@ class Person extends Agent {
     // Move a person to an adjacent room
     moveTo (destRoom) {
 
-        if (this.beliefs.in_house)
-            if ( this.house.rooms[this.beliefs.in_room].doors_to.includes(destRoom)) { 
+        if (this.beliefs.in_house) {
+
+            if (this.house.openDoor(this, this.beliefs.in_room, destRoom)) { 
                 this.house.rooms[this.beliefs.in_room].removePerson(this.name)
                 this.house.rooms[destRoom].addPerson(this.name)
                 console.log(this.name, '\t moved from', this.beliefs.in_room, 'to', destRoom)
+                this.house.closeDoor(this, this.beliefs.in_room, destRoom)
                 this.beliefs.in_room = destRoom
-
                 return true
             }
             else {
                 console.log(this.name, '\t failed moving from', this.beliefs.in_room, 'to', destRoom)
+                //exit(0)
                 return false
             }
+        }
     }
     // Moves the person out of the house
     getOut () {

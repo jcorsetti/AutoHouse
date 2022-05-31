@@ -1,18 +1,15 @@
 const Observable = require('../../utils/Observable');
 
-
-
 class Room extends Observable {
-    constructor (house, name, doors_to) {
+    constructor (house, name) {
         super()
         this.house = house;             // reference to the house
         this.name = name;               // non-observable
         this.set('people_count', 0);
         this.people_list = []
-        this.doors_to = doors_to;
     }
 
-    // Helper method. Finds and remove the person from this room, without updating people count
+    // Helper method. Finds and remove the person from this room
     removePerson(person_name) {
 
         for (let i in this.people_list)
@@ -22,7 +19,7 @@ class Room extends Observable {
                 break
             }
     }
-
+    // Add person to room
     addPerson(person_name) {
         this.people_list.push(person_name)
         this.people_count += 1

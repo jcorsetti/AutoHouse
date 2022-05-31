@@ -8,7 +8,7 @@ const SolarPanel = require('../devices/SolarPanel')
 const {WashingMachine} = require('../t1Agents/WashingMachine')
 const {Manager, MonitorElectricityGoal, UpdateHistoryGoal, MonitorSolarPanelGoal} = require('../t2Agents/Manager')
 const {PersonLighterIntention, PersonLighterGoal } = require('../devices/LightSensor')
-const {Overseer, MonitorWeatherGoal} = require('../t2Agents/Overseer')
+const {Overseer, MonitorWeatherGoal, ScanHouseGoal} = require('../t2Agents/Overseer')
 const Person = require('../structure/Person')
 
 // Custom agent, turns on and off lights as people enter and exit rooms
@@ -17,7 +17,7 @@ var myAgent = new Agent('lighter')
 // More comples agents and devices
 var wm = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var cleaner = new Cleaner('vacuum', house.room_priority, 'bathroom')
+var cleaner = new Cleaner('vacuum', ['kitchen','living_room','bathroom','bedroom','garage','backyard'], 'bathroom')
 var manager = new Manager('manager', house, [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
 var fridge = new Fridge('fridge', manager)
 manager.addDevice(fridge.device)
@@ -43,8 +43,12 @@ anna = new Person('anna')
 house.registerPerson(bob, 'bedroom')
 house.registerPerson(anna, 'bathroom')
 
+house.authAgentAllDoors(anna)
+house.authAgentAllDoors(bob)
 // Method for the manager to set lesser Agents attributes
 manager.setAgentAttribute(wm, 'eco_mode', 'off')
+
+
 
 //manager.beliefs.observe('watt_consumption', (status) => {console.log('WATT TO '+status)})
 //manager.beliefs.observe('watt_gain', (status) => {console.log('GAINS TO '+status)})
@@ -55,11 +59,11 @@ Clock.global.observe('mm', async (mm) => {
     if (time.hh==8 && time.mm==30) {
         bob.moveTo('living_room')
         anna.moveTo('living_room')
+        
         // Going to work: anna always do, bob has a more random, flexible schedule
         
-        
         anna.goToWork(7,8)
-        if(Math.random > 0.5)
+        if(Math.random() > 0.5)
             house.people.bob.goToWork(3,9)
         else 
             console.log('Bob is working from home today')
@@ -87,12 +91,22 @@ Clock.global.observe('mm', async (mm) => {
         house.foodTime(fridge)
         anna.moveTo('living_room')
     }
+    if(time.dd==1 && time.hh==22 && time.mm==0) {
+        
+        //ghost = new Person('ghost')
+        //ghost.beliefs.in_room = 'living_room'
+        //house.rooms.living_room.people_list.push('ghost')
+        
+    }
     if(time.hh==22 && time.mm==15) {
         bob.moveTo('bedroom')
         anna.moveTo('bedroom')
         //house.removePerson('anna')
-        console.log(house.rooms.bedroom.people_count)
-        console.log(house.rooms.bedroom.people_list)
+
+    }
+    if(time.hh==23 && time.mm==45) {
+        overseer.postSubGoal(new ScanHouseGoal())
+        //house.removePerson('anna')
 
     }
 })

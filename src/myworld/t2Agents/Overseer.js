@@ -5,11 +5,50 @@ const Goal = require('../../bdi/Goal')
 const Intention = require('../../bdi/Intention')
 const {BAD_WEATHER_PROB} = require('../scenarios/constants')
 const { sumTime, equalTimes } = require('../../utils/Clock')
-
+const {containsObject, removeObject} = require('../../utils/helpers')
 
 class MonitorWeatherGoal extends Goal {
     constructor() {
         super()
+    }
+}
+
+class MonitorDoorsGoal extends Goal {
+    constructor() {
+        super()
+    }
+}
+
+class ScanHouseGoal extends Goal {
+    constructor() {
+        super()
+    }
+}
+
+class ScanHouseIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+        this.agent = agent
+        this.goal = goal
+    }
+
+    static applicable(goal) {
+        return goal instanceof ScanHouseGoal
+    }
+
+    *exec() {
+        let house = this.agent.house
+        let legal_people = house.people
+
+        for (let room_name in house.rooms) {
+            let room = house.rooms[room_name]
+            console.log(room_name)
+            for (let person_name of room.people_list) {
+                console.log(person_name)
+                if (!(person_name in legal_people))
+                    console.log('Alert! Detected unknown person ' + person_name + ' in ' + room_name)
+            }            
+        }
     }
 }
 
@@ -57,16 +96,19 @@ class MonitorWeatherIntention extends Intention {
 }
 
 
+
+
 class Overseer extends Agent {
     constructor(name, house, solar_panels) {
 
         super(name)   
         this.solar_panels = solar_panels
         this.intentions.push(MonitorWeatherIntention)
+        this.intentions.push(ScanHouseIntention)
         this.house = house
         this.beliefs = new Observable({'dangerous_weather': false})
     }
 
 }
 
-module.exports = {Overseer, MonitorWeatherGoal}
+module.exports = {Overseer, MonitorWeatherGoal, ScanHouseGoal}
