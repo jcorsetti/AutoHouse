@@ -15,10 +15,29 @@ const Person = require('../structure/Person')
 var myAgent = new Agent('lighter')
 
 // More comples agents and devices
-var wm = new WashingMachine('wm_bathroom')
+var washingMachine = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var cleaner = new Cleaner('vacuum', ['kitchen','living_room','bathroom','bedroom','garage','backyard'], 'bathroom')
-var manager = new Manager('manager', house, [cleaner.device, wm.device, house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light], solarPanels)
+var cleaner1 = new Cleaner('vacuum_1', ['kitchen','living_room','bathroom1','garage','backyard'], 'bathroom1')
+var cleaner2 = new Cleaner('vacuum_2', ['corridor', 'study_room', 'bathroom2'], 'bathroom2')
+var dishwasher = new WashingMachine('wm_kitchen')
+var manager = new Manager('manager', house, 
+    [
+        cleaner1.device,
+        cleaner2.device, 
+        washingMachine.device, 
+        dishwasher.device,
+        house.devices.kitchen_light,
+        house.devices.backyard_light, 
+        house.devices.garage_light, 
+        house.devices.living_room_light, 
+        house.devices.bedroom_light, 
+        house.devices.bathroom1_light,
+        house.devices.corridor_light,
+        house.devices.study_room_light,
+        house.devices.bathroom2_light,
+    ], solarPanels
+)
+
 var fridge = new Fridge('fridge', manager)
 manager.addDevice(fridge.device)
 var overseer = new Overseer('overseer', house, solarPanels)
@@ -34,21 +53,30 @@ overseer.postSubGoal(new MonitorWeatherGoal())
 // List of rooms and relative lights for the agent to check
 
 myAgent.postSubGoal(new PersonLighterGoal(
-    [house.rooms.kitchen, house.rooms.garage, house.rooms.living_room, house.rooms.bedroom, house.rooms.bathroom],
-    [house.devices.kitchen_light, house.devices.garage_light, house.devices.living_room_light, house.devices.bedroom_light, house.devices.bathroom_light]
+    [house.rooms.kitchen, house.rooms.garage, house.rooms.living_room, house.rooms.bedroom, house.rooms.bathroom1],
+    [   house.devices.kitchen_light,
+        house.devices.backyard_light, 
+        house.devices.garage_light, 
+        house.devices.living_room_light, 
+        house.devices.bedroom_light, 
+        house.devices.bathroom1_light,
+        house.devices.corridor_light,
+        house.devices.study_room_light,
+        house.devices.bathroom2_light]
 ))
   
 bob = new Person('bob')
 anna = new Person('anna')
 house.registerPerson(bob, 'bedroom')
-house.registerPerson(anna, 'bathroom')
+house.registerPerson(anna, 'bathroom1')
 
-house.authAgentAllDoors(anna)
-house.authAgentAllDoors(bob)
+for (let prop in overseer)
+    console.log(prop)
+
+overseer.authAgentAllDoors(house, anna)
+overseer.authAgentAllDoors(house, bob)
 // Method for the manager to set lesser Agents attributes
-manager.setAgentAttribute(wm, 'eco_mode', 'off')
-
-
+manager.setAgentAttribute(washingMachine, 'eco_mode', 'off')
 
 //manager.beliefs.observe('watt_consumption', (status) => {console.log('WATT TO '+status)})
 //manager.beliefs.observe('watt_gain', (status) => {console.log('GAINS TO '+status)})
@@ -65,11 +93,16 @@ Clock.global.observe('mm', async (mm) => {
         anna.goToWork(7,8)
         if(Math.random() > 0.5)
             house.people.bob.goToWork(3,9)
-        else 
+        else {
+            bob.moveTo('corridor')
+            bob.moveTo('study_room')
             console.log('Bob is working from home today')
+        }
     }
     if(time.hh==13 && time.mm==30) {
         // moveTo does not throw error if the person is not in the house
+        bob.moveTo('corridor')
+        bob.moveTo('living_room')
         bob.moveTo('kitchen')
         anna.moveTo('kitchen')
         // lunch time
@@ -77,15 +110,16 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==19 && time.mm==0) {
         bob.moveTo('living_room')
-        cleaner.decideCleaning()
+        cleaner1.decideCleaning()
+        cleaner2.decideCleaning()
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability
-        wm.removeLoads()
+        washingMachine.removeLoads()
         if(Math.random > 0.1) 
-            wm.addLoad()
+            washingMachine.addLoad()
         // Cycle will only start when the agent settings allows it
-        wm.startCycle()
+        washingMachine.startCycle()
 
         // dinner time
         house.foodTime(fridge)
@@ -100,6 +134,7 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==22 && time.mm==15) {
         bob.moveTo('bedroom')
+        anna.moveTo('corridor')
         anna.moveTo('bedroom')
         //house.removePerson('anna')
 
@@ -107,7 +142,6 @@ Clock.global.observe('mm', async (mm) => {
     if(time.hh==23 && time.mm==45) {
         overseer.postSubGoal(new ScanHouseGoal())
         //house.removePerson('anna')
-
     }
 })
 

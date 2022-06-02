@@ -3,17 +3,12 @@ const Observable = require('../../utils/Observable')
 const Agent = require('../../bdi/Agent')
 const Goal = require('../../bdi/Goal')
 const Intention = require('../../bdi/Intention')
+const Person = require('../structure/Person')
 const {BAD_WEATHER_PROB} = require('../scenarios/constants')
 const { sumTime, equalTimes } = require('../../utils/Clock')
 const {containsObject, removeObject} = require('../../utils/helpers')
 
 class MonitorWeatherGoal extends Goal {
-    constructor() {
-        super()
-    }
-}
-
-class MonitorDoorsGoal extends Goal {
     constructor() {
         super()
     }
@@ -40,11 +35,12 @@ class ScanHouseIntention extends Intention {
         let house = this.agent.house
         let legal_people = house.people
 
+        // Iterate over rooms
         for (let room_name in house.rooms) {
             let room = house.rooms[room_name]
-            console.log(room_name)
+            // Iterate over people in room
             for (let person_name of room.people_list) {
-                console.log(person_name)
+                // Check people list against list of legal people
                 if (!(person_name in legal_people))
                     console.log('Alert! Detected unknown person ' + person_name + ' in ' + room_name)
             }            
@@ -96,8 +92,6 @@ class MonitorWeatherIntention extends Intention {
 }
 
 
-
-
 class Overseer extends Agent {
     constructor(name, house, solar_panels) {
 
@@ -107,6 +101,102 @@ class Overseer extends Agent {
         this.intentions.push(ScanHouseIntention)
         this.house = house
         this.beliefs = new Observable({'dangerous_weather': false})
+    }
+
+    
+    // Authorize an agent to access a door between room1 e room2
+    authAgentDoor(house, agent, room1, room2) {
+        var found = false
+        for (let door of house.doors) {
+            if (((door.room1 == room1) && (door.room2 == room2)) || ((door.room2 == room1) && (door.room1 == room2))) { 
+                found = true
+                // Works for both Person and non-Persons Agents (like smart devices), but on different lists
+                if (agent instanceof Person) {
+                    if (!containsObject(agent.name, door.people_allowed)) {
+                        door.people_allowed.append(agent.name)
+                        break   
+                    }
+                }
+                else {
+                    if (agent instanceof Agent) {
+                        if (!containsObject(agent.name, door.device_allowed)) {
+                            door.device_allowed.append(agent.name)
+                            break   
+                        }    
+                    }
+                }
+            }
+        }
+        if (!found)
+            console.log('Could not find door between ' + room1 + ' and ' + room2)
+    }
+
+    // Remove an agent authorization to access a door between room1 and room2
+    deauthAgentDoor(house, agent, room1, room2) {
+        var found = false
+
+        for (let door of house.doors) {
+            if (((door.room1 == room1) && (door.room2 == room2)) || ((door.room2 == room1) && (door.room1 == room2))) { 
+                found = true
+                if (agent instanceof Person) {
+                    if (containsObject(agent, door.people_allowed)) {
+                        removeObject(agent, door.people_allowed) 
+                        break   
+                    }
+                }
+                else {
+                    if (agent instanceof Agent) {
+                        if (containsObject(agent, door.device_allowed)) {
+                            removeObject(agent, door.device_allowed) 
+                            break   
+                        }
+                    }
+                }
+            }
+        }
+        if (!found)
+            console.log('Could not find door between ' + room1 + ' and ' + room2)
+    }
+    
+    // Authorize an agent to access all doors in the house
+    authAgentAllDoors(house,agent) {
+        
+        for (let door of house.doors)  {
+            
+            if (agent instanceof Person) {
+                
+                if (!containsObject(agent.name, door.people_allowed)) {
+                    door.people_allowed.push(agent.name)
+                    console.log(agent.name + ' registered to ' + door.name)
+                }
+            }
+            else {
+                if (agent instanceof Agent) {
+                    if (!containsObject(agent.name, door.device_allowed)) {
+                        door.device_allowed.push(agent.name)
+                    }    
+                }
+            }    
+        }
+    }
+
+    // Remove an agent authorization to access all doors
+    deauthAgentAllDoors(house, agent) {
+        for (let door of house.doors) {
+            
+            if (agent instanceof Person) {
+                if (containsObject(agent, door.people_allowed)) {
+                    removeObject(agent, door.people_allowed) 
+                }
+            }
+            else {
+                if (agent instanceof Agent) {
+                    if (containsObject(agent, door.device_allowed)) {
+                        removeObject(agent, door.device_allowed) 
+                    }
+                }
+            }       
+        }
     }
 
 }

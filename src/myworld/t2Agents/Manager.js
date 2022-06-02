@@ -113,7 +113,7 @@ class UpdateHistoryIntention extends Intention {
             if (time.dd > 0 && time.hh == 0 && time.mm == 0) {
                 
                 let history_len = this.agent.history.watt_consumption.length
-                console.log('Day ' + time.dd + ' consumption: ')
+                console.log('Day ' + time.dd + ' metrics: ')
                 for (const prop in this.agent.history) {
                     // Calculate mean filth on time unit
                     if (prop == 'mean_filth') {                         // 96 quarters of hours in a day

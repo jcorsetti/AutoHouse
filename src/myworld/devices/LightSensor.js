@@ -40,9 +40,9 @@ class PersonLighterIntention extends Intention {
                     
                     // Lights are switched on or off based on presence of people
                     if (status >= 1) {
-                        // Assumes relative lights to have the same name as the room!
+                        // Assumes relative lights to contain the name of the room
                         for(let light of this.lights) {
-                            if (light.name == room.name && (light.status == 'off'))
+                            if (light.name.startsWith(room.name) && (light.status == 'off'))
                                 light.switchOnLight()
                         }
                     }

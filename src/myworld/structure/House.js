@@ -18,19 +18,25 @@ house.rooms = {
     'kitchen' : new Room(house, 'kitchen'),
     'living_room' : new Room(house, 'living_room'),
     'garage' : new Room(house, 'garage'),
-    'bathroom' : new Room(house, 'bathroom'),
+    'bathroom1' : new Room(house, 'bathroom1'),
     'backyard' : new Room(house, 'backyard'),
-    'bedroom' : new Room(house, 'bedroom')
+    'bedroom' : new Room(house, 'bedroom'),
+    'bathroom2' : new Room(house, 'bathroom2'),
+    'corridor' : new Room(house, 'corridor'),
+    'study_room' : new Room(house, 'study_room')
 }
 // List of doors between rooms
 house.adjacency_list =[
     ['kitchen','living_room'],
     ['kitchen','backyard'],
-    ['living_room','bathroom'],
-    ['living_room','bedroom'],
+    ['living_room','bathroom1'],
     ['living_room','garage'],
     ['living_room','backyard'],
     ['kitchen','backyard'],
+    ['living_room','corridor'],
+    ['corridor','bedroom'],
+    ['corridor','study_room'],
+    ['corridor','bathroom2']
 ] 
 
 // Set filth level
@@ -39,10 +45,14 @@ house.filth_level.set('filth',0)
 // Set initial devices
 house.devices = {
     kitchen_light: new Light(house, 'kitchen'),
+    backyard_light: new Light(house, 'backyard'),
     garage_light: new Light(house, 'garage'),
     living_room_light: new Light(house, 'living_room'),
     bedroom_light: new Light(house, 'bedroom'),
-    bathroom_light: new Light(house, 'bathroom')
+    bathroom1_light: new Light(house, 'bathroom1'),
+    corridor_light: new Light(house, 'corridor'),
+    study_room_light: new Light(house, 'study_room'),
+    bathroom2_light: new Light(house, 'bathroom2'),
 }
 
 // Dictionary containing references to agents which must be accessible during planning
@@ -109,6 +119,7 @@ house.registerPerson = function(person, room) {
     person.beliefs.in_room = room
     person.beliefs.in_house = true
     // Update person position in house
+    console.log(house.rooms[room].name)
     house.rooms[room].addPerson(person.name)
     // Registering people in list
     house.people[person.name] = person
@@ -130,100 +141,6 @@ house.removePerson = function(person_name) {
     // unRegistering people in list
     delete house.people[person.name]
     console.log('Person ' + person.name + ' has been removed from the house.')
-}
-
-// Authorize an agent to access a door between room1 e room2
-house.authAgentDoor = function(agent, room1, room2) {
-    var found = false
-    for (let door of house.doors) {
-        if (((door.room1 == room1) && (door.room2 == room2)) || ((door.room2 == room1) && (door.room1 == room2))) { 
-            found = true
-            // Works for both Person and non-Persons Agents (like smart devices), but on different lists
-            if (agent instanceof Person) {
-                if (!containsObject(agent.name, door.people_allowed)) {
-                    door.people_allowed.append(agent.name)
-                    break   
-                }
-            }
-            else {
-                if (agent instanceof Agent) {
-                    if (!containsObject(agent.name, door.device_allowed)) {
-                        door.device_allowed.append(agent.name)
-                        break   
-                    }    
-                }
-            }
-        }
-    }
-    if (!found)
-        console.log('Could not find door between ' + room1 + ' and ' + room2)
-}
-
-// Remove an agent authorization to access a door between room1 and room2
-house.deauthAgentDoor = function(agent, room1, room2) {
-    var found = false
-    for (let door of house.doors) {
-        if (((door.room1 == room1) && (door.room2 == room2)) || ((door.room2 == room1) && (door.room1 == room2))) { 
-            found = true
-            if (agent instanceof Person) {
-                if (containsObject(agent, door.people_allowed)) {
-                    removeObject(agent, door.people_allowed) 
-                    break   
-                }
-            }
-            else {
-                if (agent instanceof Agent) {
-                    if (containsObject(agent, door.device_allowed)) {
-                        removeObject(agent, door.device_allowed) 
-                        break   
-                    }
-                }
-            }
-        }
-    }
-    if (!found)
-        console.log('Could not find door between ' + room1 + ' and ' + room2)
-}
-
-// Authorize an agent to access all doors in the house
-house.authAgentAllDoors = function(agent) {
-    console.log(agent.name)
-    for (let door of house.doors)  {
-
-        if (agent instanceof Person) {
-            console.log('Yee, ' + agent.name + ' is a person!')
-            if (!containsObject(agent.name, door.people_allowed)) {
-                door.people_allowed.push(agent.name)
-                console.log(agent.name + ' registered to ' + door.name)
-            }
-        }
-        else {
-            if (agent instanceof Agent) {
-                if (!containsObject(agent.name, door.device_allowed)) {
-                    door.device_allowed.push(agent.name)
-                }    
-            }
-        }    
-    }
-}
-
-// Remove an agent authorization to access all doors
-house.deauthAgentAllDoors = function(agent) {
-    for (let door of house.doors) {
-        
-        if (agent instanceof Person) {
-            if (containsObject(agent, door.people_allowed)) {
-                removeObject(agent, door.people_allowed) 
-            }
-        }
-        else {
-            if (agent instanceof Agent) {
-                if (containsObject(agent, door.device_allowed)) {
-                    removeObject(agent, door.device_allowed) 
-                }
-            }
-        }       
-    }
 }
 
 // Build doors based on adjacency list
@@ -254,7 +171,7 @@ house.openDoor = function(agent, room1, room2) {
                     return true
                 }
                 else 
-                    door.alarm = 1
+                    console.log(agent.name + ' not authorized to open door ' + door.name)
             }
             else {
                 if (agent instanceof Agent) {
@@ -265,7 +182,7 @@ house.openDoor = function(agent, room1, room2) {
                         return true
                     }
                     else 
-                        door.alarm = 1
+                        console.log(agent.name + ' not authorized to open door ' + door.name)
                 }
             }
         }
