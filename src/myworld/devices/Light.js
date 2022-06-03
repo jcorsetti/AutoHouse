@@ -14,7 +14,7 @@ class Light extends Observable {
     switchOnLight (l) {
         if (this.status == 'off') {
             this.status = 'on'
-            // Include some messages logged on the console!
+
             console.log(this.name + ' light turned on')
         }
     }
@@ -22,7 +22,6 @@ class Light extends Observable {
     switchOffLight (l) {
         if (this.status == 'on') {
             this.status = 'off'
-            // Include some messages logged on the console!
             console.log(this.name + ' light turned off')
         }
     }

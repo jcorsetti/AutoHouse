@@ -7,6 +7,12 @@ const Person = require('../structure/Person')
 const {BAD_WEATHER_PROB} = require('../scenarios/constants')
 const { sumTime, equalTimes } = require('../../utils/Clock')
 const {containsObject, removeObject} = require('../../utils/helpers')
+const house = require('../structure/House')
+class ScanHouseGoal extends Goal {
+    constructor() {
+        super()
+    }
+}
 
 class MonitorWeatherGoal extends Goal {
     constructor() {
@@ -14,7 +20,15 @@ class MonitorWeatherGoal extends Goal {
     }
 }
 
-class ScanHouseGoal extends Goal {
+class DoorRequestGoal extends Goal {
+    constructor(room1, room2) {
+        super()
+        this.room1 = room1
+        this.room2 = room2
+    }
+}
+
+class CloseAllDoorsGoal extends Goal {
     constructor() {
         super()
     }
@@ -42,10 +56,47 @@ class ScanHouseIntention extends Intention {
             for (let person_name of room.people_list) {
                 // Check people list against list of legal people
                 if (!(person_name in legal_people))
-                    console.log('Alert! Detected unknown person ' + person_name + ' in ' + room_name)
+                    this.agent.error('Alert! Detected unknown person ' + person_name + ' in ' + room_name)
+                else
+                    this.agent.log('Authorized person ' + person_name + ' in ' + room_name)
             }            
         }
     }
+}
+
+class DoorRequestIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+        this.agent = agent
+        this.goal = goal
+    }
+
+    static applicable(goal) {
+        return goal instanceof DoorRequestGoal
+    }
+
+    *exec() {
+
+        let room_from = this.goal.room1
+        let room_to = this.goal.room2
+        
+        // Must check if room is allowed
+        if (containsObject(room_to, this.agent.forbidden_if_occupied)) {
+            // Room forbidden if occupied, but no one inside! can be opened
+            if (this.agent.house.rooms[room_to].people_count == 0) {
+                this.agent.house.openDoor(this.agent, room_from, room_to)
+                this.agent.log('Accepted request to open door ' + room_from + ' ' + room_to)
+            }
+            else
+                this.agent.error('DENIED request to open door ' + room_from + ' ' + room_to)
+        }
+        // Room not forbidden, can open door!
+        else {
+            this.agent.house.openDoor(this.agent, room_from, room_to)
+            this.agent.log('Accepted request to open door ' + room_from + ' ' + room_to)
+        }
+        yield
+    }    
 }
 
 class MonitorWeatherIntention extends Intention {
@@ -66,7 +117,7 @@ class MonitorWeatherIntention extends Intention {
             var time = Clock.global
             let chance = Math.random()
             if ((chance <= BAD_WEATHER_PROB) && (!this.agent.beliefs.dangerous_weather)) {
-                console.log(this.agent.name + ' dangerous weather event occurring, covering solar panels')
+                this.agent.log('dangerous weather event occurring, covering solar panels')
                 this.agent.solar_panels.set('cover','on')
                 this.agent.solar_panels.set('status','off')
                 // The random duration of the event is generated contextually
@@ -79,7 +130,7 @@ class MonitorWeatherIntention extends Intention {
                     time = await Clock.global.notifyChange('mm')
                     // When time comes, the cycle breaks off
                     if (equalTimes(Clock.global, event_finish_time)) {
-                        console.log(this.agent.name + ' back to normal weather, starting solar panels')
+                        this.agent.log('back to normal weather, starting solar panels')
                         this.agent.solar_panels.set('cover','off')
                         this.agent.beliefs.dangerous_weather = false
                         break
@@ -91,6 +142,34 @@ class MonitorWeatherIntention extends Intention {
     }
 }
 
+class CloseAllDoorsIntention extends Intention {
+    constructor(agent, goal) {
+        super(agent, goal)
+
+        this.agent = agent
+        this.goal = goal
+    }
+
+    static applicable(goal) {
+        return goal instanceof CloseAllDoorsGoal
+    }
+
+    // Closes all door, keeping count of total doors and how many have been closed
+    *exec() {
+        var door_count = 0
+        var closed_door_count = 0
+        let house = this.agent.house
+        for (let door of house.doors) {
+            let s = house.getDoorStatus(door.room1, door.room2)
+            door_count = door_count + 1
+            if (s == 'open') {
+                house.closeDoor(this.agent, door.room1, door.room2)
+                closed_door_count = closed_door_count + 1
+            }
+        }
+        this.agent.log(this.agent.name + ': \t Closed ' + closed_door_count + ' of ' + door_count)
+    }
+}
 
 class Overseer extends Agent {
     constructor(name, house, solar_panels) {
@@ -99,8 +178,11 @@ class Overseer extends Agent {
         this.solar_panels = solar_panels
         this.intentions.push(MonitorWeatherIntention)
         this.intentions.push(ScanHouseIntention)
+        this.intentions.push(DoorRequestIntention)
+        this.intentions.push(CloseAllDoorsIntention)
         this.house = house
         this.beliefs = new Observable({'dangerous_weather': false})
+        this.forbidden_if_occupied = ['bedroom', 'study_room', 'bathroom1', 'bathroom2']
     }
 
     
@@ -128,7 +210,7 @@ class Overseer extends Agent {
             }
         }
         if (!found)
-            console.log('Could not find door between ' + room1 + ' and ' + room2)
+            this.log('Could not find door between ' + room1 + ' and ' + room2)
     }
 
     // Remove an agent authorization to access a door between room1 and room2
@@ -167,7 +249,6 @@ class Overseer extends Agent {
                 
                 if (!containsObject(agent.name, door.people_allowed)) {
                     door.people_allowed.push(agent.name)
-                    console.log(agent.name + ' registered to ' + door.name)
                 }
             }
             else {
@@ -199,6 +280,14 @@ class Overseer extends Agent {
         }
     }
 
+    performSecurityScan() {
+        this.postSubGoal(new ScanHouseGoal())
+    }
+
+    closeAllDoors() {
+        this.postSubGoal(new CloseAllDoorsGoal())
+    }
+
 }
 
-module.exports = {Overseer, MonitorWeatherGoal, ScanHouseGoal}
+module.exports = {Overseer, MonitorWeatherGoal, ScanHouseGoal, DoorRequestGoal}

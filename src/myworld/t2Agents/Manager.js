@@ -9,10 +9,11 @@ const house = require('../structure/House')
 
 
 class FoodNotificationGoal extends Goal {
-    constructor(food_ordered) {
+    constructor(food_ordered, agent) {
         super()
 
         this.food_ordered = food_ordered
+        this.ordering_agent = agent
     }
 }
 
@@ -24,6 +25,7 @@ class FoodNotificationIntention extends Intention {
         
         this.agent = agent
         this.food_ordered = goal.food_ordered
+        this.ordering_agent = goal.ordering_agent
     }
 
     static applicable(goal) {
@@ -36,6 +38,7 @@ class FoodNotificationIntention extends Intention {
             let food_total_cost = this.food_ordered * FOOD_PRICE
             let cur_day = Clock.global.dd
             this.agent.history.expenses[cur_day] += food_total_cost
+            this.ordering_agent.beliefs.food += this.food_ordered
         })
         yield notification
     }
@@ -113,16 +116,16 @@ class UpdateHistoryIntention extends Intention {
             if (time.dd > 0 && time.hh == 0 && time.mm == 0) {
                 
                 let history_len = this.agent.history.watt_consumption.length
-                console.log('Day ' + time.dd + ' metrics: ')
+                this.agent.log('Day ' + time.dd + ' metrics: ')
                 for (const prop in this.agent.history) {
                     // Calculate mean filth on time unit
                     if (prop == 'mean_filth') {                         // 96 quarters of hours in a day
                         this.agent.history[prop][history_len-1] = this.agent.beliefs.filth / (96)
                         this.agent.beliefs.filth = 0
-                        console.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
+                        this.agent.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
                     }
                     else
-                        console.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
+                        this.agent.log('\t' + prop + ' : ' + this.agent.history[prop][history_len-1])
                 }
                     
                 this.agent.history.watt_consumption.push(0)
@@ -280,17 +283,17 @@ class Manager extends Agent {
             agent.postSubGoal(new TakeOrderGoal(key, value)).then(
                 (result) => {
                     if (result)
-                        console.log(this.name +' : setted ' + key + ' in ' + agent.name + ' to ' + value + ' succesfully')
+                        this.log('setted ' + key + ' in ' + agent.name + ' to ' + value + ' succesfully')
                     else
-                        console.log(this.name+' error: no attribute ' + key + ' in ' + agent.name)
+                        this.error('no attribute ' + key + ' in ' + agent.name)
                 })
                 .catch(
-                    (err) => {console.log('setAgentAttribute error: ' + err)}
+                    (err) => {this.error('setAgentAttribute error: ' + err)}
                 )
 
                 
         }
-        else console.log('Agent ' + agent.name + ' does not take orders!')
+        else this.error('Agent ' + agent.name + ' does not take orders!')
     }
 }
 

@@ -27,7 +27,7 @@ class StartCycleIntention extends Intention {
             if ((this.agent.device.num_loads >= 2 && this.agent.device.eco_mode == 'on') || (this.agent.device.num_loads == 4)) {
                 // Calculate finish time
                 let finish_time = Clock.sumTime(Clock.global, this.agent.device.time)
-                console.log(this.agent.name + ' : starting, expected end at time ' + Clock.timeToString(finish_time))
+                this.agent.log('starting, expected end at time ' + Clock.timeToString(finish_time))
                 // Modify beliefs
                 this.agent.device.set('status','on')
                 this.agent.device.set('num_loads', 0)
@@ -37,7 +37,7 @@ class StartCycleIntention extends Intention {
                     Clock.global.notifyChange('mm')
                     if (Clock.equalTimes(Clock.global, finish_time)) {
                         // When happens, update beliefs and exit cycle
-                        console.log(this.agent.name + ' : finished at time ' + Clock.timeToString(Clock.global))
+                        this.agent.log('finished at time ' + Clock.timeToString(Clock.global))
                         this.agent.device.set('status','off')
                         this.agent.device.set('done', true)    
                         break
@@ -45,9 +45,9 @@ class StartCycleIntention extends Intention {
                     yield
                 }
             }
-            else console.log(this.agent.name + ' : not full enough for current setting')
+            else this.agent.log('not full enough for current setting')
         }
-        else console.log(this.agent.name + ' : cannot start, has to be unloaded or is already on')                    
+        else this.agent.log('cannot start, has to be unloaded or is already on')                    
     }
 
 }
@@ -96,12 +96,12 @@ class WashingMachine extends Agent {
             if (this.device.done) {
                 this.device.set('num_loads', 0)
                 this.device.set('done', false)
-                console.log(this.name + ' : emptied loads.')
+                this.log('emptied loads')
             }
-            else console.log(this.name + ' : no loads available to be emptied.')       
+            else this.log('no loads available to be emptied.')       
         }
         else {
-            console.log(this.name + ' : device still working')
+            this.log('device still working')
         }
     }
 }

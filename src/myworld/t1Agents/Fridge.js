@@ -19,12 +19,15 @@ class Fridge extends Agent {
     // Serve food to people and updates internal status
     serveFood(num_people) {
         if (num_people <= this.beliefs.food) {
-            console.log(this.name + ' : food served for ' + num_people + ' people')
+            if (num_people > 0)
+                this.log('food served for ' + num_people + ' people')
+            else
+                this.log('there are no people in the house, no food is serve.')
             this.beliefs.food -= num_people
         }
         else {
             let fasting_people = num_people -= this.beliefs.food
-            console.log(this.name + ' : not enough food, ' + fasting_people + ' people will not eat!')
+            this.log('not enough food, ' + fasting_people + ' people will not eat!')
             this.beliefs.food = 0
         }   
     }
@@ -49,10 +52,8 @@ class KeepStockedIntention extends Intention {
                 let food = await this.agent.beliefs.notifyChange('food')
                 // If it fall under a certain value, notify the Manager to buy more food
                 if (food <= this.agent.beliefs.food_order_level) {    
-                    this.agent.manager.postSubGoal(new FoodNotificationGoal(this.agent.beliefs.food_to_order))
-                    // Internal beliefs are then updated
-                    this.agent.beliefs.food += this.agent.beliefs.food_to_order
-                    console.log('Food ordered!')
+                    this.agent.manager.postSubGoal(new FoodNotificationGoal(this.agent.beliefs.food_to_order, this.agent))
+                    this.log('Food ordered, new food level: ' + this.agent.beliefs.food)
                 } 
             }
         })        

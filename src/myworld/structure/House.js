@@ -119,11 +119,10 @@ house.registerPerson = function(person, room) {
     person.beliefs.in_room = room
     person.beliefs.in_house = true
     // Update person position in house
-    console.log(house.rooms[room].name)
     house.rooms[room].addPerson(person.name)
     // Registering people in list
     house.people[person.name] = person
-    console.log('Person ' + person.name + ' registered in the house.')
+    this.log('Person ' + person.name + ' registered in the house.')
 }
 
 // Remove a person from the house
@@ -140,7 +139,7 @@ house.removePerson = function(person_name) {
     }
     // unRegistering people in list
     delete house.people[person.name]
-    console.log('Person ' + person.name + ' has been removed from the house.')
+    this.log('Person ' + person.name + ' has been removed from the house.')
 }
 
 // Build doors based on adjacency list
@@ -155,6 +154,13 @@ house.makeDoors = function(adjacency_list) {
         let door = new Door(name, room1, room2)
         house.doors.push(door)
     }
+}
+// Returns door status or undefined
+house.getDoorStatus = function(room1, room2) {
+    for (let door of house.doors) 
+        if (((door.room1 == room1) && (door.room2 == room2)) || ((door.room2 == room1) && (door.room1 == room2)))
+            return door.status
+    return undefined
 }
 
 // Opens a door if exists and agent is allowed to
@@ -171,7 +177,7 @@ house.openDoor = function(agent, room1, room2) {
                     return true
                 }
                 else 
-                    console.log(agent.name + ' not authorized to open door ' + door.name)
+                    this.log(agent.name + ' not authorized to open door ' + door.name)
             }
             else {
                 if (agent instanceof Agent) {
@@ -182,7 +188,7 @@ house.openDoor = function(agent, room1, room2) {
                         return true
                     }
                     else 
-                        console.log(agent.name + ' not authorized to open door ' + door.name)
+                        this.log(agent.name + ' not authorized to open door ' + door.name)
                 }
             }
         }

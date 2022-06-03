@@ -255,24 +255,25 @@ class PostmanAcceptAllRequest extends Intention {
     {
         let a1 = new Agent('a1')
         world.beliefs.observeAny( sensor(a1) )
-        a1.intentions.push(PickUp, PutDown, Stack, UnStack)
+        a1.intentions.push(PickUp, PutDown, UnStack)
         a1.intentions.push(OnlinePlanning)
-        a1.intentions.push(RetryFourTimesIntention)
+        //a1.intentions.push(RetryFourTimesIntention)
         a1.intentions.push(PostmanAcceptAllRequest)
 
         // console.log('a1 entries', a1.beliefs.entries)
         // console.log('a1 literals', a1.beliefs.literals)
 
-        // a1.postSubGoal( new PlanningGoal( { goal: ['holding a'] } ) ) // by default give up after trying all intention to achieve the goal
-        a1.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: ['holding a a1'] } ) } ) ) // try to achieve the PlanningGoal for 4 times
+        a1.postSubGoal( new PlanningGoal( { goal: ['holding a a1'] } ) ) // by default give up after trying all intention to achieve the goal
+        //a1.postSubGoal( new RetryGoal( { goal: new PlanningGoal( { goal: ['holding a a1'] } ) } ) ) // try to achieve the PlanningGoal for 4 times
         a1.postSubGoal( new Postman() )
     }
     {
         let a2 = new Agent('a2')
         world.beliefs.observeAny( sensor(a2) )
-        a2.intentions.push(PickUp, PutDown, Stack, UnStack)
+        a2.intentions.push(Stack)
+
         a2.intentions.push(OnlinePlanning)
-        a2.intentions.push(RetryFourTimesIntention)
+        //a2.intentions.push(RetryFourTimesIntention)
         a2.intentions.push(PostmanAcceptAllRequest)
 
         // console.log('a2 entries', a2.beliefs.entries)

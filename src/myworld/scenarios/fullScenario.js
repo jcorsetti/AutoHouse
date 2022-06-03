@@ -7,8 +7,8 @@ const Cleaner = require('../t1Agents/Cleaner')
 const SolarPanel = require('../devices/SolarPanel')
 const {WashingMachine} = require('../t1Agents/WashingMachine')
 const {Manager, MonitorElectricityGoal, UpdateHistoryGoal, MonitorSolarPanelGoal} = require('../t2Agents/Manager')
-const {PersonLighterIntention, PersonLighterGoal } = require('../devices/LightSensor')
-const {Overseer, MonitorWeatherGoal, ScanHouseGoal} = require('../t2Agents/Overseer')
+const {PersonLighterIntention, PersonLighterGoal} = require('../devices/LightSensor')
+const {Overseer, MonitorWeatherGoal} = require('../t2Agents/Overseer')
 const Person = require('../structure/Person')
 
 // Custom agent, turns on and off lights as people enter and exit rooms
@@ -17,9 +17,10 @@ var myAgent = new Agent('lighter')
 // More comples agents and devices
 var washingMachine = new WashingMachine('wm_bathroom')
 var solarPanels = new SolarPanel()
-var cleaner1 = new Cleaner('vacuum_1', ['kitchen','living_room','bathroom1','garage','backyard'], 'bathroom1')
-var cleaner2 = new Cleaner('vacuum_2', ['corridor', 'study_room', 'bathroom2'], 'bathroom2')
 var dishwasher = new WashingMachine('wm_kitchen')
+var overseer = new Overseer('overseer', house, solarPanels)
+var cleaner1 = new Cleaner('vacuum_1', ['kitchen','living_room','bathroom1','garage','backyard'], 'living_room', overseer)
+var cleaner2 = new Cleaner('vacuum_2', ['corridor', 'study_room', 'bathroom2'], 'bathroom2', overseer)
 var manager = new Manager('manager', house, 
     [
         cleaner1.device,
@@ -40,7 +41,6 @@ var manager = new Manager('manager', house,
 
 var fridge = new Fridge('fridge', manager)
 manager.addDevice(fridge.device)
-var overseer = new Overseer('overseer', house, solarPanels)
 
 // Pushing intentions and passive goals
 myAgent.intentions.push(PersonLighterIntention)
@@ -70,16 +70,11 @@ anna = new Person('anna')
 house.registerPerson(bob, 'bedroom')
 house.registerPerson(anna, 'bathroom1')
 
-for (let prop in overseer)
-    console.log(prop)
-
 overseer.authAgentAllDoors(house, anna)
 overseer.authAgentAllDoors(house, bob)
+overseer.authAgentAllDoors(house, overseer)
 // Method for the manager to set lesser Agents attributes
 manager.setAgentAttribute(washingMachine, 'eco_mode', 'off')
-
-//manager.beliefs.observe('watt_consumption', (status) => {console.log('WATT TO '+status)})
-//manager.beliefs.observe('watt_gain', (status) => {console.log('GAINS TO '+status)})
 
 // Simulated Daily/Weekly schedule
 Clock.global.observe('mm', async (mm) => {
@@ -118,30 +113,34 @@ Clock.global.observe('mm', async (mm) => {
         washingMachine.removeLoads()
         if(Math.random > 0.1) 
             washingMachine.addLoad()
-        // Cycle will only start when the agent settings allows it
-        washingMachine.startCycle()
-
-        // dinner time
-        house.foodTime(fridge)
-        anna.moveTo('living_room')
-    }
-    if(time.dd==1 && time.hh==22 && time.mm==0) {
-        
-        //ghost = new Person('ghost')
-        //ghost.beliefs.in_room = 'living_room'
-        //house.rooms.living_room.people_list.push('ghost')
-        
+            // Cycle will only start when the agent settings allows it
+            washingMachine.startCycle()
+            
+            // dinner time
+            house.foodTime(fridge)
+            anna.moveTo('living_room')
+        }
+        if(time.dd==1 && time.hh==22 && time.mm==0) {
+            bob.moveTo('living_room')
+            
+            // Example of an unknown person appearing in the house
+            ghost = new Person('ghost')
+            ghost.beliefs.in_room = 'living_room'
+            house.rooms.living_room.people_list.push('ghost')
+            bob.moveTo('bathroom1')
     }
     if(time.hh==22 && time.mm==15) {
-        bob.moveTo('bedroom')
+        //bob.moveTo('bedroom')
         anna.moveTo('corridor')
         anna.moveTo('bedroom')
-        //house.removePerson('anna')
+        
 
     }
     if(time.hh==23 && time.mm==45) {
-        overseer.postSubGoal(new ScanHouseGoal())
-        //house.removePerson('anna')
+        // At night, the overseer closes all doors and performs a scan for unknown people
+        overseer.performSecurityScan()
+        overseer.closeAllDoors()
+        
     }
 })
 

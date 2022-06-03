@@ -21,13 +21,15 @@ class Person extends Agent {
             if (this.house.openDoor(this, this.beliefs.in_room, destRoom)) { 
                 this.house.rooms[this.beliefs.in_room].removePerson(this.name)
                 this.house.rooms[destRoom].addPerson(this.name)
-                console.log(this.name, '\t moved from', this.beliefs.in_room, 'to', destRoom)
-                this.house.closeDoor(this, this.beliefs.in_room, destRoom)
+                this.log('moved from', this.beliefs.in_room, 'to', destRoom)
+                // Clumsy people: sometimes they do not close the door after exiting
+                if (Math.random() > 0.2)
+                    this.house.closeDoor(this, this.beliefs.in_room, destRoom)
                 this.beliefs.in_room = destRoom
                 return true
             }
             else {
-                console.log(this.name, '\t failed moving from', this.beliefs.in_room, 'to', destRoom)
+                this.log('failed moving from', this.beliefs.in_room, 'to', destRoom)
                 //exit(0)
                 return false
             }
@@ -39,7 +41,7 @@ class Person extends Agent {
             this.beliefs.in_house = false 
             this.house.rooms[this.beliefs.in_room].removePerson(this.name)
             this.beliefs.in_room = undefined
-            console.log(this.name + '\t got out of the house')
+            this.log('got out of the house.')
         }
     }
     
@@ -49,7 +51,7 @@ class Person extends Agent {
             this.beliefs.in_house = true 
             this.beliefs.in_room = 'living_room'
             this.house.rooms['living_room'].addPerson(this.name)
-            console.log(this.name + '\t got in the house, welcome!')
+            this.log('got in the house, welcome!')
         }
     }
 
@@ -57,12 +59,11 @@ class Person extends Agent {
     goToWork (minWorkHours, maxWorkHours) {
         
         if (this.beliefs.in_house) {
-            console.log(this.name + ' is going to work')
             this.postSubGoal(new WorkGoal(minWorkHours, maxWorkHours))
             .then(() => this.getIn())
             .catch((err) => {
                 this.getIn()
-                console.log('Error:' + res)
+                this.error(res)
             })
         }
     }
@@ -93,14 +94,13 @@ class WorkIntention extends Intention {
         // Generate worktime and return time
         let work_time = Clock.randomTime(this.goal.minWorkHours, this.goal.maxWorkHours)
         let return_time = Clock.sumTime(Clock.global, work_time)
-        console.log(this.agent.name + ' is going to work, he will be back at ' + Clock.timeToString(return_time))
+        this.agent.log('going to work, I will be back at ' + Clock.timeToString(return_time))
         this.agent.getOut()
             
         // Wait for finish time to arrive
         while(true) {
             Clock.global.notifyChange('mm')
             if (Clock.equalTimes(Clock.global, return_time)) {
-                // When happens, update beliefs and exit cycle
                 break
             }
             yield 
