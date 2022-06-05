@@ -4,6 +4,7 @@ const Intention = require('../../bdi/Intention')
 const Observable = require('../../utils/Observable')
 const FridgeDevice = require('../devices/FridgeDevice')
 const {FoodNotificationGoal} = require('../t2Agents/Manager')
+const { TakeOrderIntention } = require('./utils')
 
 // Agent managing a fridge
 class Fridge extends Agent {
@@ -11,24 +12,24 @@ class Fridge extends Agent {
         super(name)
 
         this.device = new FridgeDevice(name, 10)
-        this.intentions.push(KeepStockedIntention) //always active
+        this.intentions.push(KeepStockedIntention) //always active\
+        this.intentions.push(TakeOrderIntention)
         this.manager = manager   // relative manager. Threshold ath which food is ordered, quantity of food ordered
-        this.beliefs = new Observable({'food' : 7, 'food_order_level' : 6, 'food_to_order' : 3})
     }
 
     // Serve food to people and updates internal status
     serveFood(num_people) {
-        if (num_people <= this.beliefs.food) {
+        if (num_people <= this.device.food) {
             if (num_people > 0)
                 this.log('food served for ' + num_people + ' people')
             else
                 this.log('there are no people in the house, no food is serve.')
-            this.beliefs.food -= num_people
+            this.device.food -= num_people
         }
         else {
-            let fasting_people = num_people -= this.beliefs.food
+            let fasting_people = num_people -= this.device.food
             this.log('not enough food, ' + fasting_people + ' people will not eat!')
-            this.beliefs.food = 0
+            this.device.food = 0
         }   
     }
 }
@@ -49,11 +50,11 @@ class KeepStockedIntention extends Intention {
             
             while(true) {
                 // Check food changes, buy more when necessary
-                let food = await this.agent.beliefs.notifyChange('food')
+                let food = await this.agent.device.notifyChange('food')
                 // If it fall under a certain value, notify the Manager to buy more food
-                if (food <= this.agent.beliefs.food_order_level) {    
-                    this.agent.manager.postSubGoal(new FoodNotificationGoal(this.agent.beliefs.food_to_order, this.agent))
-                    this.log('Food ordered, new food level: ' + this.agent.beliefs.food)
+                if (food <= this.agent.device.food_order_level) {    
+                    this.agent.manager.postSubGoal(new FoodNotificationGoal(this.agent.device.food_to_order, this.agent))
+                    this.log('Food ordered, new food level: ' + this.agent.device.food)
                 } 
             }
         })        

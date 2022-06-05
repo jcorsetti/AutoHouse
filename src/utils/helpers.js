@@ -11,7 +11,7 @@ function containsObject(obj, list) {
 function removeObject(obj, list) {
 
     for (let i of list)
-        if (list[i] == person_name)  
+        if (list[i] == obj)  
             list.splice(i, 1)
 }
 

@@ -44,7 +44,6 @@ manager.setAgentAttribute(cleaner1, 'filth_tolerated', 2)
 Clock.global.observe('mm', async (mm) => {
     var time = Clock.global
     if (time.hh==8 && time.mm==30) {
-       bob.moveTo('bathroom1')
        
     }
     if(time.hh==13 && time.mm==30) {

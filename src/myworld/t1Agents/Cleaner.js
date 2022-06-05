@@ -225,7 +225,7 @@ class Cleaner extends Agent {
         
         // Check business of rooms
         for (let room in house.rooms) {
-            if (house.rooms[room].people_count > 2) {
+            if (house.rooms[room].people_count >= 2) {
 
                 this.beliefs.declare('busy ' + room)
                 house.beliefs.declare('busy ' + room)

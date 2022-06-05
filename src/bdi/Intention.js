@@ -1,7 +1,5 @@
 const Goal = require('./Goal');
 const Agent = require('./Agent');
-const keypress = require('../utils/keypress')
-
 var nextId = 0
 
 /**

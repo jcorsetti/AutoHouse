@@ -1,0 +1,839 @@
+fridge                         Trying to use intention KeepStockedIntention to achieve goal {KeepStockedGoal#0:{}}
+fridge>KeepStockedIntention#0  Intention started
+manager                        Trying to use intention MonitorElectricityIntention to achieve goal {MonitorElectricityGoal#1:{}}
+manager>MonitorElectricityIntention#1 Intention started
+manager                        Trying to use intention UpdateHistoryIntention to achieve goal {UpdateHistoryGoal#2:{}}
+manager>UpdateHistoryIntention#2 Intention started
+manager                        Trying to use intention MonitorSolarPanelIntention to achieve goal {MonitorSolarPanelGoal#3:{}}
+manager>MonitorSolarPanelIntention#3 Intention started
+overseer                       Trying to use intention MonitorWeatherIntention to achieve goal {MonitorWeatherGoal#4:{}}
+overseer>MonitorWeatherIntention#4 Intention started
+lighter                        Trying to use intention PersonLighterIntention to achieve goal {PersonLighterGoal#5:{}}
+lighter>PersonLighterIntention#5 Intention started
+house                          Person bob registered in the house.
+house                          Person anna registered in the house.
+wm_bathroom                    Trying to use intention TakeOrderIntention to achieve goal {TakeOrderGoal#6:{}}
+wm_bathroom>TakeOrderIntention#6 Intention started
+house                          Belief changed: accessible kitchen living_room
+house                          Belief changed: accessible living_room kitchen
+house                          Belief changed: clean kitchen
+house                          Belief changed: clean living_room
+house                          Belief changed: accessible kitchen backyard
+house                          Belief changed: accessible backyard kitchen
+house                          Belief changed: clean backyard
+house                          Belief changed: accessible living_room bathroom1
+house                          Belief changed: accessible bathroom1 living_room
+house                          Belief changed: clean bathroom1
+house                          Belief changed: accessible living_room garage
+house                          Belief changed: accessible garage living_room
+house                          Belief changed: clean garage
+house                          Belief changed: accessible living_room backyard
+house                          Belief changed: accessible backyard living_room
+house                          Belief changed: accessible living_room corridor
+house                          Belief changed: accessible corridor living_room
+house                          Belief changed: clean corridor
+house                          Belief changed: accessible corridor bedroom
+house                          Belief changed: accessible bedroom corridor
+house                          Belief changed: clean bedroom
+house                          Belief changed: accessible corridor study_room
+house                          Belief changed: accessible study_room corridor
+house                          Belief changed: clean study_room
+house                          Belief changed: accessible corridor bathroom2
+house                          Belief changed: accessible bathroom2 corridor
+house                          Belief changed: clean bathroom2
+vacuum_1                       Belief changed: in-room living_room vacuum_1
+house                          Belief changed: in-room living_room vacuum_1
+vacuum_2                       Belief changed: in-room bathroom2 vacuum_2
+house                          Belief changed: in-room bathroom2 vacuum_2
+manager>UpdateHistoryIntention#2 Intention success
+manager                        Succesfully used intention UpdateHistoryIntention to achieve goal {UpdateHistoryGoal#2:{}}
+overseer>MonitorWeatherIntention#4 Intention success
+overseer                       Succesfully used intention MonitorWeatherIntention to achieve goal {MonitorWeatherGoal#4:{}}
+wm_bathroom>TakeOrderIntention#6 Intention success
+wm_bathroom                    Succesfully used intention TakeOrderIntention to achieve goal {TakeOrderGoal#6:{}}
+manager                        setted eco_mode in wm_bathroom to off succesfully
+0:02:00 overseer                       dangerous weather event occurring, covering solar panels
+0:06:00 living_room became dirty!
+house                          Belief changed: not clean living_room
+house                          Belief changed: dirty living_room
+0:07:00 living_room became filthy!
+house                          Belief changed: not dirty living_room
+house                          Belief changed: filthy living_room
+overseer                       back to normal weather, starting solar panels
+0:08:30 bob                            failed moving from bedroom to living_room
+anna                           moved from bathroom1 to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#7:{}}
+anna>WorkIntention#7           Intention started
+anna                           going to work, I will be back at [Day 0 | 16:0]
+anna                           got out of the house.
+bob                            moved from bedroom to corridor
+bob                            moved from corridor to study_room
+Bob is working from home today
+living_room light turned on
+0:13:00 bathroom2 became dirty!
+house                          Belief changed: not clean bathroom2
+house                          Belief changed: dirty bathroom2
+0:13:30 bob                            moved from study_room to corridor
+bob                            moved from corridor to living_room
+bob                            moved from living_room to kitchen
+fridge                         food served for 1 people
+kitchen light turned on
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#8:{}}
+manager>FoodNotificationIntention#8 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 9
+0:16:00 anna>WorkIntention#7           Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#7:{}}
+anna                           got in the house, welcome!
+0:19:00 bob                            moved from kitchen to living_room
+kitchen light turned off
+0:19:30 wm_bathroom                    no loads available to be emptied.
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#9:{}}
+wm_bathroom>StartCycleIntention#9 Intention started
+wm_bathroom                    not full enough for current setting
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+wm_bathroom>StartCycleIntention#9 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#9:{}}
+0:22:00 bathroom2 became filthy!
+house                          Belief changed: not dirty bathroom2
+house                          Belief changed: filthy bathroom2
+0:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+bedroom light turned on
+0:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#10:{}}
+overseer>ScanHouseIntention#10 Intention started
+overseer                       Authorized person bob in living_room
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#11:{}}
+overseer>CloseAllDoorsIntention#11 Intention started
+overseer                       overseer:         Closed 2 of 10
+overseer>ScanHouseIntention#10 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#10:{}}
+overseer>CloseAllDoorsIntention#11 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#11:{}}
+1:00:00 manager                        Day 1 metrics: 
+manager                         watt_consumption : 4910
+manager                         energy_bought : 2910
+manager                         expenses : 350
+manager                         mean_filth : 2.1666666666666665
+1:03:00 overseer                       dangerous weather event occurring, covering solar panels
+1:05:00 overseer                       back to normal weather, starting solar panels
+1:08:30 bob                            failed moving from living_room to living_room
+anna                           failed moving from bedroom to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#12:{}}
+anna>WorkIntention#12          Intention started
+anna                           going to work, I will be back at [Day 1 | 16:0]
+anna                           got out of the house.
+bob                            Trying to use intention WorkIntention to achieve goal {WorkGoal#13:{}}
+bob>WorkIntention#13           Intention started
+bob                            going to work, I will be back at [Day 1 | 16:45]
+bob                            got out of the house.
+bedroom light turned off
+living_room light turned off
+1:13:00 bathroom1 became dirty!
+house                          Belief changed: not clean bathroom1
+house                          Belief changed: dirty bathroom1
+1:13:30 fridge                         there are no people in the house, no food is serve.
+1:16:00 anna>WorkIntention#12          Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#12:{}}
+anna                           got in the house, welcome!
+living_room light turned on
+1:16:45 bob>WorkIntention#13           Intention success
+bob                            Succesfully used intention WorkIntention to achieve goal {WorkGoal#13:{}}
+bob                            got in the house, welcome!
+1:19:00 bob                            failed moving from living_room to living_room
+1:19:30 wm_bathroom                    no loads available to be emptied.
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#14:{}}
+wm_bathroom>StartCycleIntention#14 Intention started
+wm_bathroom                    not full enough for current setting
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#15:{}}
+manager>FoodNotificationIntention#15 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 8
+wm_bathroom>StartCycleIntention#14 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#14:{}}
+1:22:00 overseer                       dangerous weather event occurring, covering solar panels
+bob                            failed moving from living_room to living_room
+bob                            moved from living_room to bathroom1
+bathroom1 light turned on
+1:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+living_room light turned off
+bedroom light turned on
+1:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#16:{}}
+overseer>ScanHouseIntention#16 Intention started
+overseer                       Alert! Detected unknown person ghost in living_room
+overseer                       Authorized person bob in bathroom1
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#17:{}}
+overseer>CloseAllDoorsIntention#17 Intention started
+overseer                       overseer:         Closed 0 of 10
+overseer>ScanHouseIntention#16 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#16:{}}
+overseer>CloseAllDoorsIntention#17 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#17:{}}
+2:00:00 manager                        Day 2 metrics: 
+manager                         watt_consumption : 5250
+manager                         energy_bought : 3250
+manager                         expenses : 306
+manager                         mean_filth : 4.625
+2:03:30 overseer                       back to normal weather, starting solar panels
+2:07:00 bedroom became dirty!
+house                          Belief changed: not clean bedroom
+house                          Belief changed: dirty bedroom
+2:08:30 bob                            moved from bathroom1 to living_room
+anna                           failed moving from bedroom to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#18:{}}
+anna>WorkIntention#18          Intention started
+anna                           going to work, I will be back at [Day 2 | 15:30]
+anna                           got out of the house.
+bob                            moved from living_room to corridor
+bob                            moved from corridor to study_room
+Bob is working from home today
+vacuum_1                       Too much filth detected, started cleaning schedule
+vacuum_1                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#19 goal:clean living_room,clean bathroom1,in-room living_room vacuum_1
+vacuum_1>OnlinePlanning#19     Intention started
+vacuum_2                       Too much filth detected, started cleaning schedule
+vacuum_2                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#20 goal:clean bathroom2,in-room bathroom2 vacuum_2
+vacuum_2>OnlinePlanning#20     Intention started
+vacuum_1                       Belief changed: accessible kitchen living_room
+vacuum_1                       Belief changed: accessible living_room kitchen
+vacuum_1                       Belief changed: clean kitchen
+vacuum_1                       Belief changed: not clean living_room
+vacuum_1                       Belief changed: accessible kitchen backyard
+vacuum_1                       Belief changed: accessible backyard kitchen
+vacuum_1                       Belief changed: clean backyard
+vacuum_1                       Belief changed: accessible living_room bathroom1
+vacuum_1                       Belief changed: accessible bathroom1 living_room
+vacuum_1                       Belief changed: not clean bathroom1
+vacuum_1                       Belief changed: accessible living_room garage
+vacuum_1                       Belief changed: accessible garage living_room
+vacuum_1                       Belief changed: clean garage
+vacuum_1                       Belief changed: accessible living_room backyard
+vacuum_1                       Belief changed: accessible backyard living_room
+vacuum_1                       Belief changed: clean corridor
+vacuum_1                       Belief changed: not clean bedroom
+vacuum_1                       Belief changed: clean study_room
+vacuum_1                       Belief changed: not clean bathroom2
+vacuum_1                       Belief changed: not dirty living_room
+vacuum_1                       Belief changed: filthy living_room
+vacuum_1                       Belief changed: not dirty bathroom2
+vacuum_1                       Belief changed: filthy bathroom2
+vacuum_1                       Belief changed: dirty bathroom1
+vacuum_1                       Belief changed: dirty bedroom
+vacuum_2                       Belief changed: clean kitchen
+vacuum_2                       Belief changed: not clean living_room
+vacuum_2                       Belief changed: clean backyard
+vacuum_2                       Belief changed: not clean bathroom1
+vacuum_2                       Belief changed: clean garage
+vacuum_2                       Belief changed: clean corridor
+vacuum_2                       Belief changed: not clean bedroom
+vacuum_2                       Belief changed: accessible corridor study_room
+vacuum_2                       Belief changed: accessible study_room corridor
+vacuum_2                       Belief changed: clean study_room
+vacuum_2                       Belief changed: accessible corridor bathroom2
+vacuum_2                       Belief changed: accessible bathroom2 corridor
+vacuum_2                       Belief changed: not clean bathroom2
+vacuum_2                       Belief changed: not dirty living_room
+vacuum_2                       Belief changed: filthy living_room
+vacuum_2                       Belief changed: not dirty bathroom2
+vacuum_2                       Belief changed: filthy bathroom2
+vacuum_2                       Belief changed: dirty bathroom1
+vacuum_2                       Belief changed: dirty bedroom
+bathroom1 light turned off
+living_room light turned on
+bedroom light turned off
+2:11:00 overseer                       dangerous weather event occurring, covering solar panels
+2:12:15 vacuum_2>OnlinePlanning#20     Plan found:
+vacuum_2>OnlinePlanning#20     - (cleanfilthy vacuum_2 bathroom2)
+vacuum_2>OnlinePlanning#20     - (cleandirty vacuum_2 bathroom2)
+vacuum_1>OnlinePlanning#19     Plan found:
+vacuum_1>OnlinePlanning#19     - (moveto vacuum_1 living_room bathroom1)
+vacuum_1>OnlinePlanning#19     - (cleandirty vacuum_1 bathroom1)
+vacuum_1>OnlinePlanning#19     - (moveto vacuum_1 bathroom1 living_room)
+vacuum_1>OnlinePlanning#19     - (cleanfilthy vacuum_1 living_room)
+vacuum_1>OnlinePlanning#19     - (cleandirty vacuum_1 living_room)
+vacuum_2>OnlinePlanning#20     Starting sequential step (CleanFilthy vacuum_2 bathroom2) Effect: dirty bathroom2,not filthy bathroom2
+vacuum_2>CleanFilthy#21        Intention started
+house                          Belief changed: dirty bathroom2
+house                          Belief changed: not filthy bathroom2
+vacuum_1>OnlinePlanning#19     Starting sequential step (MoveTo vacuum_1 living_room bathroom1) Effect: in-room bathroom1 vacuum_1,not in-room living_room vacuum_1
+vacuum_1>MoveTo#23             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#29:{}}
+overseer>DoorRequestIntention#29 Intention started
+overseer                       Accepted request to open door living_room bathroom1
+house                          Belief changed: in-room bathroom1 vacuum_1
+house                          Belief changed: not in-room living_room vacuum_1
+overseer>DoorRequestIntention#29 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#29:{}}
+vacuum_2                       Belief changed: dirty bathroom2
+vacuum_2                       Belief changed: not filthy bathroom2
+vacuum_1                       Belief changed: in-room bathroom1 vacuum_1
+vacuum_1                       Belief changed: not in-room living_room vacuum_1
+2:12:30 vacuum_1>MoveTo#23             Intention success
+vacuum_1>OnlinePlanning#19     Starting sequential step (CleanDirty vacuum_1 bathroom1) Effect: clean bathroom1,not dirty bathroom1
+vacuum_1>CleanDirty#24         Intention started
+house                          Belief changed: clean bathroom1
+house                          Belief changed: not dirty bathroom1
+vacuum_1                       Belief changed: clean bathroom1
+vacuum_1                       Belief changed: not dirty bathroom1
+2:12:45 vacuum_2>CleanFilthy#21        Intention success
+vacuum_2>OnlinePlanning#20     Starting sequential step (CleanDirty vacuum_2 bathroom2) Effect: clean bathroom2,not dirty bathroom2
+vacuum_2>CleanDirty#22         Intention started
+house                          Belief changed: clean bathroom2
+house                          Belief changed: not dirty bathroom2
+vacuum_2                       Belief changed: clean bathroom2
+vacuum_2                       Belief changed: not dirty bathroom2
+2:13:00 vacuum_1>CleanDirty#24         Intention success
+vacuum_1>OnlinePlanning#19     Starting sequential step (MoveTo vacuum_1 bathroom1 living_room) Effect: in-room living_room vacuum_1,not in-room bathroom1 vacuum_1
+vacuum_1>MoveTo#25             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#33:{}}
+overseer>DoorRequestIntention#33 Intention started
+overseer                       Accepted request to open door bathroom1 living_room
+house                          Belief changed: in-room living_room vacuum_1
+house                          Belief changed: not in-room bathroom1 vacuum_1
+overseer>DoorRequestIntention#33 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#33:{}}
+vacuum_1                       Belief changed: in-room living_room vacuum_1
+vacuum_1                       Belief changed: not in-room bathroom1 vacuum_1
+2:13:15 vacuum_1>MoveTo#25             Intention success
+vacuum_2>CleanDirty#22         Intention success
+vacuum_1>OnlinePlanning#19     Starting sequential step (CleanFilthy vacuum_1 living_room) Effect: dirty living_room,not filthy living_room
+vacuum_1>CleanFilthy#26        Intention started
+house                          Belief changed: dirty living_room
+house                          Belief changed: not filthy living_room
+vacuum_2>OnlinePlanning#20     Intention success
+vacuum_2                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#20 goal:clean bathroom2,in-room bathroom2 vacuum_2
+vacuum_2                       Plan finished, setting off.
+vacuum_1                       Belief changed: dirty living_room
+vacuum_1                       Belief changed: not filthy living_room
+2:13:30 bob                            moved from study_room to corridor
+bob                            moved from corridor to living_room
+bob                            moved from living_room to kitchen
+fridge                         food served for 1 people
+kitchen light turned on
+2:13:45 vacuum_1>CleanFilthy#26        Intention success
+vacuum_1>OnlinePlanning#19     Starting sequential step (CleanDirty vacuum_1 living_room) Effect: clean living_room,not dirty living_room
+vacuum_1>CleanDirty#27         Intention started
+house                          Belief changed: clean living_room
+house                          Belief changed: not dirty living_room
+vacuum_1                       Belief changed: clean living_room
+vacuum_1                       Belief changed: not dirty living_room
+2:14:00 garage became dirty!
+house                          Belief changed: not clean garage
+house                          Belief changed: dirty garage
+2:14:15 vacuum_1>CleanDirty#27         Intention success
+vacuum_1>OnlinePlanning#19     Intention success
+vacuum_1                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#19 goal:clean living_room,clean bathroom1,in-room living_room vacuum_1
+vacuum_1                       Plan finished, setting off.
+2:15:30 anna>WorkIntention#18          Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#18:{}}
+anna                           got in the house, welcome!
+2:16:00 kitchen became dirty!
+house                          Belief changed: not clean kitchen
+house                          Belief changed: dirty kitchen
+2:19:00 bob                            moved from kitchen to living_room
+kitchen light turned off
+2:19:30 wm_bathroom                    no loads available to be emptied.
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#37:{}}
+wm_bathroom>StartCycleIntention#37 Intention started
+wm_bathroom                    not full enough for current setting
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#38:{}}
+manager>FoodNotificationIntention#38 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 8
+wm_bathroom>StartCycleIntention#37 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#37:{}}
+2:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+bedroom light turned on
+2:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#39:{}}
+overseer>ScanHouseIntention#39 Intention started
+overseer                       Alert! Detected unknown person ghost in living_room
+overseer                       Authorized person bob in living_room
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#40:{}}
+overseer>CloseAllDoorsIntention#40 Intention started
+overseer                       overseer:         Closed 1 of 10
+overseer>ScanHouseIntention#39 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#39:{}}
+overseer>CloseAllDoorsIntention#40 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#40:{}}
+3:00:00 manager                        Day 3 metrics: 
+manager                         watt_consumption : 7530
+manager                         energy_bought : 4180
+manager                         expenses : 619
+manager                         mean_filth : 4.270833333333333
+living_room became dirty!
+house                          Belief changed: not clean living_room
+house                          Belief changed: dirty living_room
+3:07:00 backyard became dirty!
+house                          Belief changed: not clean backyard
+house                          Belief changed: dirty backyard
+3:08:00 corridor became dirty!
+house                          Belief changed: not clean corridor
+house                          Belief changed: dirty corridor
+3:08:30 bob                            failed moving from living_room to living_room
+anna                           failed moving from bedroom to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#41:{}}
+anna>WorkIntention#41          Intention started
+anna                           going to work, I will be back at [Day 3 | 15:30]
+anna                           got out of the house.
+bob                            moved from living_room to corridor
+bob                            moved from corridor to study_room
+Bob is working from home today
+vacuum_1                       Too much filth detected, started cleaning schedule
+vacuum_1                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#42 goal:clean kitchen,clean living_room,clean garage,clean backyard,in-room living_room vacuum_1
+vacuum_1>OnlinePlanning#42     Intention started
+vacuum_2                       Too much filth detected, started cleaning schedule
+vacuum_2                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#43 goal:clean corridor,in-room bathroom2 vacuum_2
+vacuum_2>OnlinePlanning#43     Intention started
+vacuum_1                       Belief changed: not clean kitchen
+vacuum_1                       Belief changed: not clean living_room
+vacuum_1                       Belief changed: not clean backyard
+vacuum_1                       Belief changed: not clean garage
+vacuum_1                       Belief changed: not clean corridor
+vacuum_1                       Belief changed: clean bathroom2
+vacuum_1                       Belief changed: dirty living_room
+vacuum_1                       Belief changed: not filthy bathroom2
+vacuum_1                       Belief changed: dirty garage
+vacuum_1                       Belief changed: dirty kitchen
+vacuum_1                       Belief changed: dirty backyard
+vacuum_1                       Belief changed: dirty corridor
+vacuum_2                       Belief changed: not clean kitchen
+vacuum_2                       Belief changed: not clean backyard
+vacuum_2                       Belief changed: clean bathroom1
+vacuum_2                       Belief changed: not clean garage
+vacuum_2                       Belief changed: not clean corridor
+vacuum_2                       Belief changed: dirty living_room
+vacuum_2                       Belief changed: not filthy living_room
+vacuum_2                       Belief changed: not dirty bathroom1
+vacuum_2                       Belief changed: dirty garage
+vacuum_2                       Belief changed: dirty kitchen
+vacuum_2                       Belief changed: dirty backyard
+vacuum_2                       Belief changed: dirty corridor
+bedroom light turned off
+living_room light turned off
+3:11:00 vacuum_1>OnlinePlanning#42     Plan found:
+vacuum_1>OnlinePlanning#42     - (cleandirty vacuum_1 living_room)
+vacuum_1>OnlinePlanning#42     - (moveto vacuum_1 living_room kitchen)
+vacuum_1>OnlinePlanning#42     - (cleandirty vacuum_1 kitchen)
+vacuum_1>OnlinePlanning#42     - (moveto vacuum_1 kitchen backyard)
+vacuum_1>OnlinePlanning#42     - (cleandirty vacuum_1 backyard)
+vacuum_1>OnlinePlanning#42     - (moveto vacuum_1 backyard living_room)
+vacuum_1>OnlinePlanning#42     - (moveto vacuum_1 living_room garage)
+vacuum_1>OnlinePlanning#42     - (cleandirty vacuum_1 garage)
+vacuum_1>OnlinePlanning#42     - (moveto vacuum_1 garage living_room)
+vacuum_2>OnlinePlanning#43     Plan found:
+vacuum_2>OnlinePlanning#43     - (moveto vacuum_2 bathroom2 corridor)
+vacuum_2>OnlinePlanning#43     - (cleandirty vacuum_2 corridor)
+vacuum_2>OnlinePlanning#43     - (moveto vacuum_2 corridor bathroom2)
+vacuum_1>OnlinePlanning#42     Starting sequential step (CleanDirty vacuum_1 living_room) Effect: clean living_room,not dirty living_room
+vacuum_1>CleanDirty#44         Intention started
+house                          Belief changed: clean living_room
+house                          Belief changed: not dirty living_room
+vacuum_2>OnlinePlanning#43     Starting sequential step (MoveTo vacuum_2 bathroom2 corridor) Effect: in-room corridor vacuum_2,not in-room bathroom2 vacuum_2
+vacuum_2>MoveTo#53             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#57:{}}
+overseer>DoorRequestIntention#57 Intention started
+overseer                       Accepted request to open door bathroom2 corridor
+house                          Belief changed: in-room corridor vacuum_2
+house                          Belief changed: not in-room bathroom2 vacuum_2
+overseer>DoorRequestIntention#57 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#57:{}}
+vacuum_1                       Belief changed: clean living_room
+vacuum_1                       Belief changed: not dirty living_room
+3:11:15 vacuum_2                       Belief changed: in-room corridor vacuum_2
+vacuum_2                       Belief changed: not in-room bathroom2 vacuum_2
+vacuum_2>MoveTo#53             Intention success
+vacuum_2>OnlinePlanning#43     Starting sequential step (CleanDirty vacuum_2 corridor) Effect: clean corridor,not dirty corridor
+vacuum_2>CleanDirty#54         Intention started
+house                          Belief changed: clean corridor
+house                          Belief changed: not dirty corridor
+vacuum_2                       Belief changed: clean corridor
+vacuum_2                       Belief changed: not dirty corridor
+3:11:30 vacuum_1>CleanDirty#44         Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (MoveTo vacuum_1 living_room kitchen) Effect: in-room kitchen vacuum_1,not in-room living_room vacuum_1
+vacuum_1>MoveTo#45             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#60:{}}
+overseer>DoorRequestIntention#60 Intention started
+overseer                       Accepted request to open door living_room kitchen
+house                          Belief changed: in-room kitchen vacuum_1
+house                          Belief changed: not in-room living_room vacuum_1
+overseer>DoorRequestIntention#60 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#60:{}}
+vacuum_1                       Belief changed: in-room kitchen vacuum_1
+vacuum_1                       Belief changed: not in-room living_room vacuum_1
+3:11:45 vacuum_2>CleanDirty#54         Intention success
+vacuum_1>MoveTo#45             Intention success
+vacuum_2>OnlinePlanning#43     Starting sequential step (MoveTo vacuum_2 corridor bathroom2) Effect: in-room bathroom2 vacuum_2,not in-room corridor vacuum_2
+vacuum_2>MoveTo#55             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#62:{}}
+overseer>DoorRequestIntention#62 Intention started
+overseer                       Accepted request to open door corridor bathroom2
+house                          Belief changed: in-room bathroom2 vacuum_2
+house                          Belief changed: not in-room corridor vacuum_2
+vacuum_1>OnlinePlanning#42     Starting sequential step (CleanDirty vacuum_1 kitchen) Effect: clean kitchen,not dirty kitchen
+vacuum_1>CleanDirty#46         Intention started
+house                          Belief changed: clean kitchen
+house                          Belief changed: not dirty kitchen
+overseer>DoorRequestIntention#62 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#62:{}}
+vacuum_2                       Belief changed: in-room bathroom2 vacuum_2
+vacuum_2                       Belief changed: not in-room corridor vacuum_2
+vacuum_1                       Belief changed: clean kitchen
+vacuum_1                       Belief changed: not dirty kitchen
+3:12:00 vacuum_2>MoveTo#55             Intention success
+vacuum_2>OnlinePlanning#43     Intention success
+vacuum_2                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#43 goal:clean corridor,in-room bathroom2 vacuum_2
+vacuum_2                       Plan finished, setting off.
+3:12:15 vacuum_1>CleanDirty#46         Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (MoveTo vacuum_1 kitchen backyard) Effect: in-room backyard vacuum_1,not in-room kitchen vacuum_1
+vacuum_1>MoveTo#47             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#65:{}}
+overseer>DoorRequestIntention#65 Intention started
+overseer                       Accepted request to open door kitchen backyard
+house                          Belief changed: in-room backyard vacuum_1
+house                          Belief changed: not in-room kitchen vacuum_1
+overseer>DoorRequestIntention#65 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#65:{}}
+vacuum_1                       Belief changed: in-room backyard vacuum_1
+vacuum_1                       Belief changed: not in-room kitchen vacuum_1
+3:12:30 vacuum_1>MoveTo#47             Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (CleanDirty vacuum_1 backyard) Effect: clean backyard,not dirty backyard
+vacuum_1>CleanDirty#48         Intention started
+house                          Belief changed: clean backyard
+house                          Belief changed: not dirty backyard
+vacuum_1                       Belief changed: clean backyard
+vacuum_1                       Belief changed: not dirty backyard
+3:13:00 vacuum_1>CleanDirty#48         Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (MoveTo vacuum_1 backyard living_room) Effect: in-room living_room vacuum_1,not in-room backyard vacuum_1
+vacuum_1>MoveTo#49             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#68:{}}
+overseer>DoorRequestIntention#68 Intention started
+overseer                       Accepted request to open door backyard living_room
+house                          Belief changed: in-room living_room vacuum_1
+house                          Belief changed: not in-room backyard vacuum_1
+overseer>DoorRequestIntention#68 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#68:{}}
+vacuum_1                       Belief changed: in-room living_room vacuum_1
+vacuum_1                       Belief changed: not in-room backyard vacuum_1
+3:13:15 vacuum_1>MoveTo#49             Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (MoveTo vacuum_1 living_room garage) Effect: in-room garage vacuum_1,not in-room living_room vacuum_1
+vacuum_1>MoveTo#50             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#70:{}}
+overseer>DoorRequestIntention#70 Intention started
+overseer                       Accepted request to open door living_room garage
+house                          Belief changed: in-room garage vacuum_1
+house                          Belief changed: not in-room living_room vacuum_1
+overseer>DoorRequestIntention#70 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#70:{}}
+vacuum_1                       Belief changed: in-room garage vacuum_1
+vacuum_1                       Belief changed: not in-room living_room vacuum_1
+3:13:30 bob                            moved from study_room to corridor
+bob                            moved from corridor to living_room
+bob                            moved from living_room to kitchen
+fridge                         food served for 1 people
+living_room light turned on
+kitchen light turned on
+vacuum_1>MoveTo#50             Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (CleanDirty vacuum_1 garage) Effect: clean garage,not dirty garage
+vacuum_1>CleanDirty#51         Intention started
+house                          Belief changed: clean garage
+house                          Belief changed: not dirty garage
+vacuum_1                       Belief changed: clean garage
+vacuum_1                       Belief changed: not dirty garage
+3:14:00 vacuum_1>CleanDirty#51         Intention success
+vacuum_1>OnlinePlanning#42     Starting sequential step (MoveTo vacuum_1 garage living_room) Effect: in-room living_room vacuum_1,not in-room garage vacuum_1
+vacuum_1>MoveTo#52             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#73:{}}
+overseer>DoorRequestIntention#73 Intention started
+overseer                       Accepted request to open door garage living_room
+house                          Belief changed: in-room living_room vacuum_1
+house                          Belief changed: not in-room garage vacuum_1
+overseer>DoorRequestIntention#73 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#73:{}}
+vacuum_1                       Belief changed: in-room living_room vacuum_1
+vacuum_1                       Belief changed: not in-room garage vacuum_1
+3:14:15 vacuum_1>MoveTo#52             Intention success
+vacuum_1>OnlinePlanning#42     Intention success
+vacuum_1                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#42 goal:clean kitchen,clean living_room,clean garage,clean backyard,in-room living_room vacuum_1
+vacuum_1                       Plan finished, setting off.
+3:15:30 anna>WorkIntention#41          Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#41:{}}
+anna                           got in the house, welcome!
+3:18:00 backyard became dirty!
+house                          Belief changed: not clean backyard
+house                          Belief changed: dirty backyard
+3:19:00 bob                            moved from kitchen to living_room
+kitchen light turned off
+3:19:30 wm_bathroom                    no loads available to be emptied.
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#75:{}}
+wm_bathroom>StartCycleIntention#75 Intention started
+wm_bathroom                    starting, expected end at time [Day 3 | 20:15]
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#76:{}}
+manager>FoodNotificationIntention#76 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 8
+3:20:15 wm_bathroom                    finished at time [Day 3 | 20:15]
+wm_bathroom>StartCycleIntention#75 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#75:{}}
+3:22:00 bedroom became filthy!
+house                          Belief changed: not dirty bedroom
+house                          Belief changed: filthy bedroom
+3:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+bedroom light turned on
+3:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#77:{}}
+overseer>ScanHouseIntention#77 Intention started
+overseer                       Alert! Detected unknown person ghost in living_room
+overseer                       Authorized person bob in living_room
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#78:{}}
+overseer>CloseAllDoorsIntention#78 Intention started
+overseer                       overseer:         Closed 4 of 10
+overseer>ScanHouseIntention#77 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#77:{}}
+overseer>CloseAllDoorsIntention#78 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#78:{}}
+4:00:00 manager                        Day 4 metrics: 
+manager                         watt_consumption : 7280
+manager                         energy_bought : 2330
+manager                         expenses : 374
+manager                         mean_filth : 3.34375
+4:07:00 corridor became dirty!
+house                          Belief changed: not clean corridor
+house                          Belief changed: dirty corridor
+4:08:30 bob                            failed moving from living_room to living_room
+anna                           failed moving from bedroom to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#79:{}}
+anna>WorkIntention#79          Intention started
+anna                           going to work, I will be back at [Day 4 | 15:45]
+anna                           got out of the house.
+bob                            Trying to use intention WorkIntention to achieve goal {WorkGoal#80:{}}
+bob>WorkIntention#80           Intention started
+bob                            going to work, I will be back at [Day 4 | 12:30]
+bob                            got out of the house.
+bedroom light turned off
+living_room light turned off
+4:12:30 bob>WorkIntention#80           Intention success
+bob                            Succesfully used intention WorkIntention to achieve goal {WorkGoal#80:{}}
+bob                            got in the house, welcome!
+living_room light turned on
+4:13:30 bob                            moved from living_room to corridor
+bob                            moved from corridor to living_room
+bob                            moved from living_room to kitchen
+fridge                         food served for 1 people
+living_room light turned off
+kitchen light turned on
+4:15:45 anna>WorkIntention#79          Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#79:{}}
+anna                           got in the house, welcome!
+living_room light turned on
+4:19:00 backyard became filthy!
+bob                            moved from kitchen to living_room
+house                          Belief changed: not dirty backyard
+house                          Belief changed: filthy backyard
+kitchen light turned off
+4:19:30 wm_bathroom                    emptied loads
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#81:{}}
+wm_bathroom>StartCycleIntention#81 Intention started
+wm_bathroom                    not full enough for current setting
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#82:{}}
+manager>FoodNotificationIntention#82 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 8
+wm_bathroom>StartCycleIntention#81 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#81:{}}
+4:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+bedroom light turned on
+4:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#83:{}}
+overseer>ScanHouseIntention#83 Intention started
+overseer                       Alert! Detected unknown person ghost in living_room
+overseer                       Authorized person bob in living_room
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#84:{}}
+overseer>CloseAllDoorsIntention#84 Intention started
+overseer                       overseer:         Closed 2 of 10
+overseer>ScanHouseIntention#83 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#83:{}}
+overseer>CloseAllDoorsIntention#84 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#84:{}}
+5:00:00 manager                        Day 5 metrics: 
+manager                         watt_consumption : 5770
+manager                         energy_bought : 820
+manager                         expenses : 86
+manager                         mean_filth : 4.09375
+5:08:30 bob                            failed moving from living_room to living_room
+anna                           failed moving from bedroom to living_room
+anna                           Trying to use intention WorkIntention to achieve goal {WorkGoal#85:{}}
+anna>WorkIntention#85          Intention started
+anna                           going to work, I will be back at [Day 5 | 15:45]
+anna                           got out of the house.
+bob                            moved from living_room to corridor
+bob                            moved from corridor to study_room
+Bob is working from home today
+vacuum_1                       Too much filth detected, started cleaning schedule
+vacuum_1                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#86 goal:clean backyard,in-room living_room vacuum_1
+vacuum_1>OnlinePlanning#86     Intention started
+vacuum_2                       Too much filth detected, started cleaning schedule
+vacuum_2                       Trying to use intention OnlinePlanning to achieve goal PddlGoal#87 goal:clean corridor,in-room bathroom2 vacuum_2
+vacuum_2>OnlinePlanning#87     Intention started
+vacuum_1                       Belief changed: not clean backyard
+vacuum_1                       Belief changed: not dirty bedroom
+vacuum_1                       Belief changed: filthy bedroom
+vacuum_1                       Belief changed: filthy backyard
+vacuum_2                       Belief changed: clean kitchen
+vacuum_2                       Belief changed: clean living_room
+vacuum_2                       Belief changed: clean garage
+vacuum_2                       Belief changed: not clean corridor
+vacuum_2                       Belief changed: not dirty living_room
+vacuum_2                       Belief changed: not dirty bedroom
+vacuum_2                       Belief changed: not dirty garage
+vacuum_2                       Belief changed: not dirty kitchen
+vacuum_2                       Belief changed: not dirty backyard
+vacuum_2                       Belief changed: dirty corridor
+vacuum_2                       Belief changed: filthy bedroom
+vacuum_2                       Belief changed: filthy backyard
+bedroom light turned off
+living_room light turned off
+5:11:00 bathroom1 became dirty!
+house                          Belief changed: not clean bathroom1
+house                          Belief changed: dirty bathroom1
+5:12:15 vacuum_2>OnlinePlanning#87     Plan found:
+vacuum_2>OnlinePlanning#87     - (moveto vacuum_2 bathroom2 corridor)
+vacuum_2>OnlinePlanning#87     - (cleandirty vacuum_2 corridor)
+vacuum_2>OnlinePlanning#87     - (moveto vacuum_2 corridor bathroom2)
+vacuum_1>OnlinePlanning#86     Plan found:
+vacuum_1>OnlinePlanning#86     - (moveto vacuum_1 living_room backyard)
+vacuum_1>OnlinePlanning#86     - (cleanfilthy vacuum_1 backyard)
+vacuum_1>OnlinePlanning#86     - (cleandirty vacuum_1 backyard)
+vacuum_1>OnlinePlanning#86     - (moveto vacuum_1 backyard living_room)
+vacuum_2>OnlinePlanning#87     Starting sequential step (MoveTo vacuum_2 bathroom2 corridor) Effect: in-room corridor vacuum_2,not in-room bathroom2 vacuum_2
+vacuum_2>MoveTo#88             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#95:{}}
+overseer>DoorRequestIntention#95 Intention started
+overseer                       Accepted request to open door bathroom2 corridor
+house                          Belief changed: in-room corridor vacuum_2
+house                          Belief changed: not in-room bathroom2 vacuum_2
+vacuum_1>OnlinePlanning#86     Starting sequential step (MoveTo vacuum_1 living_room backyard) Effect: in-room backyard vacuum_1,not in-room living_room vacuum_1
+vacuum_1>MoveTo#91             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#97:{}}
+overseer>DoorRequestIntention#97 Intention started
+overseer                       Accepted request to open door living_room backyard
+house                          Belief changed: in-room backyard vacuum_1
+house                          Belief changed: not in-room living_room vacuum_1
+overseer>DoorRequestIntention#95 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#95:{}}
+overseer>DoorRequestIntention#97 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#97:{}}
+vacuum_2                       Belief changed: in-room corridor vacuum_2
+vacuum_2                       Belief changed: not in-room bathroom2 vacuum_2
+vacuum_1                       Belief changed: in-room backyard vacuum_1
+vacuum_1                       Belief changed: not in-room living_room vacuum_1
+5:12:30 vacuum_2>MoveTo#88             Intention success
+vacuum_1>MoveTo#91             Intention success
+vacuum_2>OnlinePlanning#87     Starting sequential step (CleanDirty vacuum_2 corridor) Effect: clean corridor,not dirty corridor
+vacuum_2>CleanDirty#89         Intention started
+house                          Belief changed: clean corridor
+house                          Belief changed: not dirty corridor
+vacuum_1>OnlinePlanning#86     Starting sequential step (CleanFilthy vacuum_1 backyard) Effect: dirty backyard,not filthy backyard
+vacuum_1>CleanFilthy#92        Intention started
+house                          Belief changed: dirty backyard
+house                          Belief changed: not filthy backyard
+vacuum_2                       Belief changed: clean corridor
+vacuum_2                       Belief changed: not dirty corridor
+vacuum_1                       Belief changed: dirty backyard
+vacuum_1                       Belief changed: not filthy backyard
+5:13:00 kitchen became dirty!
+house                          Belief changed: not clean kitchen
+house                          Belief changed: dirty kitchen
+vacuum_2>CleanDirty#89         Intention success
+vacuum_1>CleanFilthy#92        Intention success
+vacuum_2>OnlinePlanning#87     Starting sequential step (MoveTo vacuum_2 corridor bathroom2) Effect: in-room bathroom2 vacuum_2,not in-room corridor vacuum_2
+vacuum_2>MoveTo#90             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#101:{}}
+overseer>DoorRequestIntention#101 Intention started
+overseer                       Accepted request to open door corridor bathroom2
+house                          Belief changed: in-room bathroom2 vacuum_2
+house                          Belief changed: not in-room corridor vacuum_2
+vacuum_1>OnlinePlanning#86     Starting sequential step (CleanDirty vacuum_1 backyard) Effect: clean backyard,not dirty backyard
+vacuum_1>CleanDirty#93         Intention started
+house                          Belief changed: clean backyard
+house                          Belief changed: not dirty backyard
+overseer>DoorRequestIntention#101 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#101:{}}
+vacuum_2                       Belief changed: in-room bathroom2 vacuum_2
+vacuum_2                       Belief changed: not in-room corridor vacuum_2
+vacuum_1                       Belief changed: clean backyard
+vacuum_1                       Belief changed: not dirty backyard
+5:13:15 vacuum_2>MoveTo#90             Intention success
+vacuum_2>OnlinePlanning#87     Intention success
+vacuum_2                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#87 goal:clean corridor,in-room bathroom2 vacuum_2
+vacuum_2                       Plan finished, setting off.
+5:13:30 bob                            moved from study_room to corridor
+bob                            moved from corridor to living_room
+bob                            moved from living_room to kitchen
+fridge                         food served for 1 people
+living_room light turned on
+kitchen light turned on
+vacuum_1>CleanDirty#93         Intention success
+vacuum_1>OnlinePlanning#86     Starting sequential step (MoveTo vacuum_1 backyard living_room) Effect: in-room living_room vacuum_1,not in-room backyard vacuum_1
+vacuum_1>MoveTo#94             Intention started
+overseer                       Trying to use intention DoorRequestIntention to achieve goal {DoorRequestGoal#104:{}}
+overseer>DoorRequestIntention#104 Intention started
+overseer                       Accepted request to open door backyard living_room
+house                          Belief changed: in-room living_room vacuum_1
+house                          Belief changed: not in-room backyard vacuum_1
+overseer>DoorRequestIntention#104 Intention success
+overseer                       Succesfully used intention DoorRequestIntention to achieve goal {DoorRequestGoal#104:{}}
+vacuum_1                       Belief changed: in-room living_room vacuum_1
+vacuum_1                       Belief changed: not in-room backyard vacuum_1
+5:13:45 vacuum_1>MoveTo#94             Intention success
+vacuum_1>OnlinePlanning#86     Intention success
+vacuum_1                       Succesfully used intention OnlinePlanning to achieve goal PddlGoal#86 goal:clean backyard,in-room living_room vacuum_1
+vacuum_1                       Plan finished, setting off.
+5:15:45 anna>WorkIntention#85          Intention success
+anna                           Succesfully used intention WorkIntention to achieve goal {WorkGoal#85:{}}
+anna                           got in the house, welcome!
+5:18:00 garage became dirty!
+house                          Belief changed: not clean garage
+house                          Belief changed: dirty garage
+5:19:00 bob                            moved from kitchen to living_room
+kitchen light turned off
+5:19:30 wm_bathroom                    no loads available to be emptied.
+wm_bathroom                    Trying to use intention StartCycleIntention to achieve goal {StartCycleGoal#106:{}}
+wm_bathroom>StartCycleIntention#106 Intention started
+wm_bathroom                    not full enough for current setting
+fridge                         food served for 2 people
+anna                           failed moving from living_room to living_room
+manager                        Trying to use intention FoodNotificationIntention to achieve goal {FoodNotificationGoal#107:{}}
+manager>FoodNotificationIntention#107 Intention started
+fridge>KeepStockedIntention#0  Food ordered, new food level: 8
+wm_bathroom>StartCycleIntention#106 Intention success
+wm_bathroom                    Succesfully used intention StartCycleIntention to achieve goal {StartCycleGoal#106:{}}
+5:22:15 anna                           moved from living_room to corridor
+anna                           moved from corridor to bedroom
+bedroom light turned on
+5:23:45 overseer                       Trying to use intention ScanHouseIntention to achieve goal {ScanHouseGoal#108:{}}
+overseer>ScanHouseIntention#108 Intention started
+overseer                       Alert! Detected unknown person ghost in living_room
+overseer                       Authorized person bob in living_room
+overseer                       Authorized person anna in bedroom
+overseer                       Trying to use intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#109:{}}
+overseer>CloseAllDoorsIntention#109 Intention started
+overseer                       overseer:         Closed 2 of 10
+overseer>ScanHouseIntention#108 Intention success
+overseer                       Succesfully used intention ScanHouseIntention to achieve goal {ScanHouseGoal#108:{}}
+overseer>CloseAllDoorsIntention#109 Intention success
+overseer                       Succesfully used intention CloseAllDoorsIntention to achieve goal {CloseAllDoorsGoal#109:{}}
+6:00:00 manager                        Day 6 metrics: 
+manager                         watt_consumption : 7070
+manager                         energy_bought : 2120
+manager                         expenses : 362
+manager                         mean_filth : 5.020833333333333

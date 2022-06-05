@@ -93,6 +93,8 @@ Clock.global.observe('mm', async (mm) => {
             bob.moveTo('study_room')
             console.log('Bob is working from home today')
         }
+        cleaner1.decideCleaning()
+        cleaner2.decideCleaning()
     }
     if(time.hh==13 && time.mm==30) {
         // moveTo does not throw error if the person is not in the house
@@ -105,20 +107,19 @@ Clock.global.observe('mm', async (mm) => {
     }
     if(time.hh==19 && time.mm==0) {
         bob.moveTo('living_room')
-        cleaner1.decideCleaning()
-        cleaner2.decideCleaning()
+
     }
     if(time.hh==19 && time.mm==30) {
         // Eventual loads are removed, new ones are loaded with some probability
         washingMachine.removeLoads()
-        if(Math.random > 0.1) 
-            washingMachine.addLoad()
+        //if(Math.random > 0.1) 
+        washingMachine.addLoad()
             // Cycle will only start when the agent settings allows it
-            washingMachine.startCycle()
-            
-            // dinner time
-            house.foodTime(fridge)
-            anna.moveTo('living_room')
+        washingMachine.startCycle()
+        
+        // dinner time
+        house.foodTime(fridge)
+        anna.moveTo('living_room')
         }
         if(time.dd==1 && time.hh==22 && time.mm==0) {
             bob.moveTo('living_room')

@@ -38,7 +38,7 @@ class FoodNotificationIntention extends Intention {
             let food_total_cost = this.food_ordered * FOOD_PRICE
             let cur_day = Clock.global.dd
             this.agent.history.expenses[cur_day] += food_total_cost
-            this.ordering_agent.beliefs.food += this.food_ordered
+            this.ordering_agent.device.food += this.food_ordered
         })
         yield notification
     }
@@ -148,6 +148,7 @@ class UpdateHistoryIntention extends Intention {
                 this.agent.history.watt_consumption[time.dd] += cur_watt 
                 this.agent.beliefs.filth += this.agent.house.filth_level.filth
                 // Most common, must access to battery or buy energy
+
                 if (net_consumption >= 0) {
 
                     // energy that can be gained from battery
@@ -173,16 +174,18 @@ class UpdateHistoryIntention extends Intention {
                 else {
                     let net_gain = -1 * net_consumption
                     new_battery_status = stored_watt + net_gain
-                    if (new_battery_status > this.agent.BATTERY_CAP) {
-                        new_battery_status = this.agent.BATTERY_CAP
+                    if (new_battery_status >= this.agent.BATTERY_CAP) {
                         net_gain = (new_battery_status - this.agent.BATTERY_CAP)
+                        new_battery_status = this.agent.BATTERY_CAP
                     }
+
                     if (net_gain > 0) 
                         total_expenses -= net_gain * SOLD_ENERGY_GAIN // extra watt always sold for 0.1
-                }
+                    }
+                    
+                    this.agent.beliefs.set('battery_status', new_battery_status)
+                    this.agent.history.expenses[time.dd] += total_expenses
 
-                this.agent.beliefs.set('battery_status', new_battery_status)
-                this.agent.history.expenses[time.dd] += total_expenses
             }
             
         })
